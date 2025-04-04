@@ -1,0 +1,3 @@
+PS C:\Users\LENOVO\OneDrive\Desktop\Global Medicare Connect Project> Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+PS C:\Users\LENOVO\OneDrive\Desktop\Global Medicare Connect Project> .\venv\Scripts\Activate
+iamnsuer212
