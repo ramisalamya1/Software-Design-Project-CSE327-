@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'booking',
     'hospital_search',
+    'admin_management',
 ]
 
 MIDDLEWARE = [
