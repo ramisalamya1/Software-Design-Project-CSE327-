@@ -17,8 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from booking.views import *
+from hospital_search.views import *
+
 
 urlpatterns = [
-    path('', booking, name="booking"),
+    path('', hospital_search_view, name='hospital_search'),
+    # path('', booking, name="booking"),
     path('admin/', admin.site.urls),
 ]
