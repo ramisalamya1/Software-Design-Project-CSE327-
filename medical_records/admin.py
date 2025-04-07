@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import MedicalRecord, RecordVersion, SharedAccess, Reminder
 
-# Register your models here.
+admin.site.register(MedicalRecord)
+admin.site.register(RecordVersion)
+admin.site.register(SharedAccess)
+admin.site.register(Reminder)

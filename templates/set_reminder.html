@@ -1,0 +1,7 @@
+<h2>Set Reminder</h2>
+<form method="post">
+  {% csrf_token %}
+  <label>Date and Time:</label><input type="datetime-local" name="reminder_date"><br>
+  <label>Message:</label><input type="text" name="message"><br>
+  <button type="submit">Set Reminder</button>
+</form>
