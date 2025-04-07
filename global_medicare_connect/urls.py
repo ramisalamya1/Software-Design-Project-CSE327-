@@ -21,7 +21,8 @@ from hospital_search.views import *
 
 
 urlpatterns = [
-    path('', hospital_search_view, name='hospital_search'),
-    # path('', booking, name="booking"),
+    # path('', hospital_search_view, name='hospital_search'),
+    # path('payment/', include('payments.urls')),  # new app
+    path('', book_appointment, name="booking"),
     path('admin/', admin.site.urls),
 ]
