@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'booking',
     'hospital_search',
     'admin_management',
+    'medical_records',
 ]
 
 MIDDLEWARE = [
