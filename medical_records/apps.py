@@ -1,6 +1,7 @@
-from django.apps import AppConfig
+from django import forms
+from .models import MedicalRecord
 
-
-class MedicalRecordsConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'medical_records'
+class MedicalRecordForm(forms.ModelForm):
+    class Meta:
+        model = MedicalRecord
+        fields = ['title', 'record_type', 'date', 'encrypted_file', 'note']
