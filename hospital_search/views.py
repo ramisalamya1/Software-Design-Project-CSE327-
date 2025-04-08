@@ -46,7 +46,7 @@ def hospital_search_view(request):
 
     treatment_types = Hospital.objects.values_list("treatment_type", flat=True).distinct()
 
-    return render(request, "hospital_search/search.html", {
+    return render(request, "search.html", {
         "hospitals": hospitals,
         "treatment_types": treatment_types,
     })

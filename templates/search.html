@@ -128,6 +128,9 @@
                         <span class="badge bg-danger">No</span>
                     {% endif %}
                 </p>
+                <form action="{% url 'booking:booking' hospital.id %}" method="get">
+                    <button type="submit" class="btn btn-success">Select Hospital</button>
+                </form>
             </div>
         {% endfor %}
     {% else %}
