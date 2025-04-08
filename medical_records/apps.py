@@ -1,7 +1,4 @@
-from django import forms
-from .models import MedicalRecord
+from django.apps import AppConfig
 
-class MedicalRecordForm(forms.ModelForm):
-    class Meta:
-        model = MedicalRecord
-        fields = ['title', 'record_type', 'date', 'encrypted_file', 'note']
+class MedicalRecordsConfig(AppConfig):
+    name = 'medical_records'

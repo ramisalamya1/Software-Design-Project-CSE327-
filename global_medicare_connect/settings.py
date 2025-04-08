@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_URL = '/login/'  # or any other URL path you want
 
 # Application definition
 
@@ -41,7 +42,9 @@ INSTALLED_APPS = [
     'hospital_search',
     'hospital_comparison',
     'admin_management',
+    'medical_records.apps.MedicalRecordsConfig',  # Add this line
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -54,14 +57,16 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'global_medicare_connect.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [
+            BASE_DIR / 'templates',  # Make sure this is here
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -69,6 +74,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'global_medicare_connect.wsgi.application'
 
