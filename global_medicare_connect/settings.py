@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'booking',
     'hospital_search',
+    'hospital_comparison',
     'admin_management',
 ]
 
