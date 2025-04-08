@@ -52,21 +52,32 @@ def upload_record(request):
         description = request.POST['description']
         record_file = request.FILES['record_file']
 
-        # Create new record
-        medical_record = MedicalRecord(
-            user=request.user,
-            title=title,
-            record_type=record_type,
-            category=Category.objects.get(id=category),
-            description=description,
-            record_file=record_file
-        )
-        medical_record.save()
+        # Fetch the category, handle if it doesn't exist
+        try:
+            category_instance = Category.objects.get(id=category)
+        except Category.DoesNotExist:
+            category_instance = None
+            messages.error(request, "Category not found.")
 
-        return redirect('medical_records:view_records')
+        if category_instance:
+            # Create new record
+            medical_record = MedicalRecord(
+                user=request.user,
+                title=title,
+                record_type=record_type,
+                category=category_instance,
+                description=description,
+                record_file=record_file
+            )
+            medical_record.save()
+
+            messages.success(request, "Medical record uploaded successfully.")
+            return redirect('medical_records:view_records')
+        else:
+            messages.error(request, "Please select a valid category.")
+            
     categories = Category.objects.all()
     return render(request, 'upload_record.html', {'categories': categories})
-
 @login_required
 def view_records(request):
     if not request.user.is_authenticated:
