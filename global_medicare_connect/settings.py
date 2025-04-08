@@ -37,10 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'hospital_search',
-    'hospital_comparison',
     'booking',
+    'hospital_search',
     'admin_management',
+    'hospital_comparison',
+    
 
 ]
 
