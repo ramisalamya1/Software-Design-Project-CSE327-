@@ -2,9 +2,14 @@
 <h2>All Reviews</h2>
 {% for review in reviews %}
   <div style="border: 1px solid #ccc; padding: 10px; margin: 15px 0;">
-    <p><strong>{{ review.user.username }}</strong> 
-      {% if review.anonymous %}(Anonymous){% endif %} 
-      on {{ review.created_at|date:"Y-m-d H:i" }}</p>
+    <p><strong>
+      {% if review.anonymous %}
+        Anonymous
+      {% else %}
+        {{ review.user.username }}
+      {% endif %}
+    </strong> 
+    on {{ review.created_at|date:"Y-m-d H:i" }}</p>
     
     <p><strong>Hospital:</strong> {{ review.hospital.name }}</p>
     {% if review.doctor %}<p><strong>Doctor:</strong> {{ review.doctor.name }}</p>{% endif %}

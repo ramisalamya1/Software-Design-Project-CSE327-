@@ -18,6 +18,10 @@ def add_review(request):
     if form.is_valid():
         review = form.save(commit=False)
         review.user = request.user
+        
+        if not request.user.groups.filter(name='VerifiedPatients').exists():
+            return render(request, 'not_verified.html')
+        
         review.save()
         return redirect('view_reviews')
     return render(request, 'review_form.html', {'form': form})
