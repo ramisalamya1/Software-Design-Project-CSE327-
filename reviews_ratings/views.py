@@ -24,6 +24,9 @@ def add_review(request):
 
 @login_required
 def edit_review(request, pk):
+    if not is_verified_patient(request.user):
+        return render(request, 'not_verified.html')
+
     review = get_object_or_404(Review, pk=pk, user=request.user)
 
     if not review.is_editable():
