@@ -11,6 +11,10 @@ class ReviewForm(forms.ModelForm):
             'service_quality', 'cost_transparency',
             'facility_standards', 'treatment_effectiveness', 'text'
         ]
+        widgets = {
+            'text': forms.Textarea(attrs={'rows': 5, 'cols': 40, 'placeholder': 'Write your experience here...'}),
+        }
+
 
 class ReviewFlagForm(forms.ModelForm):
     class Meta:
