@@ -55,6 +55,9 @@ def view_reviews(request):
 
 @login_required
 def flag_review(request, pk):
+    if not is_verified_patient(request.user):
+        return render(request, 'not_verified.html')
+
     review = get_object_or_404(Review, pk=pk)
     form = ReviewFlagForm(request.POST or None)
     if form.is_valid():
