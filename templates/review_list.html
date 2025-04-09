@@ -1,5 +1,49 @@
 <!-- review_list.html -->
 <h2>All Reviews</h2>
+
+<!-- Filter Form -->
+<form method="get">
+    <label for="hospital">Hospital:</label>
+    <select name="hospital" id="hospital">
+        <option value="">All Hospitals</option>
+        {% for hospital in hospitals %}
+            <option value="{{ hospital.id }}" {% if hospital.id == request.GET.hospital %}selected{% endif %}>
+                {{ hospital.name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label for="doctor">Doctor:</label>
+    <select name="doctor" id="doctor">
+        <option value="">All Doctors</option>
+        {% for doctor in doctors %}
+            <option value="{{ doctor.id }}" {% if doctor.id == request.GET.doctor %}selected{% endif %}>
+                {{ doctor.name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label for="service_quality">Service Quality:</label>
+    <select name="service_quality" id="service_quality">
+        <option value="">All Ratings</option>
+        {% for i in 1 2 3 4 5 %}
+            <option value="{{ i }}" {% if i == request.GET.service_quality %}selected{% endif %}>
+                {{ i }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <!-- Add other filters for cost_transparency, facility_standards, etc. -->
+
+    <button type="submit">Filter</button>
+</form>
+
+<!-- Display Average Rating -->
+{% if average_rating %}
+    <p><strong>Average Service Quality Rating:</strong> {{ average_rating|floatformat:1 }}/5</p>
+{% endif %}
+
+<!-- Reviews List -->
 {% for review in reviews %}
   <div style="border: 1px solid #ccc; padding: 10px; margin: 15px 0;">
     <p><strong>
