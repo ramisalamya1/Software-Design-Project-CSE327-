@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.db.models import Avg
 
 
+
 def is_verified_patient(user):
     return user.groups.filter(name='VerifiedPatients').exists()
 
@@ -56,7 +57,13 @@ def delete_review(request, pk):
     return redirect('view_reviews')
 
 def view_reviews(request):
+ 
+    # Filtering logic
     reviews = Review.objects.all()
+    
+    # Get hospitals and doctors to pass to the template
+    hospitals = Hospital.objects.all()
+    doctors = Doctor.objects.all()
 
     # Filtering by Hospital
     hospital_filter = request.GET.get('hospital')
@@ -72,15 +79,15 @@ def view_reviews(request):
     service_quality_filter = request.GET.get('service_quality')
     if service_quality_filter:
         reviews = reviews.filter(service_quality=service_quality_filter)
-    
-    # Add similar filters for other ratings (cost_transparency, etc.) if needed
-    
+        
     # Calculate average ratings for filtered reviews
     average_rating = reviews.aggregate(Avg('service_quality'))['service_quality__avg']
 
     return render(request, 'review_list.html', {
         'reviews': reviews,
-        'average_rating': average_rating
+        'average_rating': average_rating,
+        'hospitals': hospitals,
+        'doctors': doctors
     })
 
 @login_required
