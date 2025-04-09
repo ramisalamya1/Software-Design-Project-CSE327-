@@ -1,0 +1,19 @@
+<h2>All Reviews</h2>
+<a href="{% url 'add_review' %}">Write a Review</a>
+<ul>
+  {% for review in reviews %}
+    <li>
+      {% if not review.anonymous %} <strong>{{ review.user.username }}</strong> {% endif %}
+      <br>
+      {{ review.text }}<br>
+      Avg Rating: {{ review.average_rating|floatformat:1 }}<br>
+      {% if review.user == request.user %}
+        <a href="{% url 'edit_review' review.pk %}">Edit</a>
+        <a href="{% url 'delete_review' review.pk %}">Delete</a>
+      {% endif %}
+      <a href="{% url 'flag_review' review.pk %}">Report</a>
+    </li>
+  {% empty %}
+    <li>No reviews yet.</li>
+  {% endfor %}
+</ul>
