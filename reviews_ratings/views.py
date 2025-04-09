@@ -6,17 +6,18 @@ from .models import Review, Hospital, Doctor
 from .forms import ReviewForm, ReviewFlagForm
 from django.utils import timezone
 
+def is_verified_patient(user):
+    return user.groups.filter(name='VerifiedPatients').exists()
+
 @login_required
 def add_review(request):
+    if not is_verified_patient(request.user):
+        return render(request, 'not_verified.html')
+
     form = ReviewForm(request.POST or None)
     if form.is_valid():
         review = form.save(commit=False)
         review.user = request.user
-
-        # Check verification (mock logic — replace with your actual treatment verification)
-        if not request.user.groups.filter(name='VerifiedPatients').exists():
-            return render(request, 'not_verified.html')
-
         review.save()
         return redirect('view_reviews')
     return render(request, 'review_form.html', {'form': form})
