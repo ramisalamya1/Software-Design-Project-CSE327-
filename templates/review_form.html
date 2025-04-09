@@ -1,6 +1,19 @@
-<!-- review_form.html -->
+<!-- Optional enhancement to show larger textarea -->
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.non_field_errors }}
+
+    {{ form.hospital.label_tag }} {{ form.hospital }}
+    {{ form.doctor.label_tag }} {{ form.doctor }}
+    {{ form.anonymous.label_tag }} {{ form.anonymous }}
+
+    {{ form.service_quality.label_tag }} {{ form.service_quality }}
+    {{ form.cost_transparency.label_tag }} {{ form.cost_transparency }}
+    {{ form.facility_standards.label_tag }} {{ form.facility_standards }}
+    {{ form.treatment_effectiveness.label_tag }} {{ form.treatment_effectiveness }}
+
+    {{ form.text.label_tag }}
+    {{ form.text|add_class:"custom-textarea" }}
+
     <button type="submit">{% if edit %}Update{% else %}Submit{% endif %}</button>
 </form>
