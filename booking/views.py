@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .models import Patient
 from hospital_search.models import Hospital
@@ -8,8 +8,9 @@ from hospital_search.models import Hospital
 # def booking(request):
 #     return render(request, "appointment_booking.html")
     
-def book_appointment(request, data):
-    data = Hospital.objects.all()
+def book_appointment(request, hospital_id):
+    hospital = get_object_or_404(Hospital, pk=hospital_id)
+
     if request.method == 'POST':
         form = Patient(request.POST)
         if form.is_valid():
@@ -18,4 +19,4 @@ def book_appointment(request, data):
             return redirect('payment_redirect', appointment_id=appointment.id)
     else:
         form = Patient()
-    return render(request, 'appointment_booking.html', {'data': data})
+    return render(request, 'appointment_booking.html', {'hospital': hospital})
