@@ -41,8 +41,10 @@ def edit_review(request, pk):
 
 @login_required
 def delete_review(request, pk):
-    review = get_object_or_404(Review, pk=pk, user=request.user)
+    if not is_verified_patient(request.user):
+        return render(request, 'not_verified.html')
 
+    review = get_object_or_404(Review, pk=pk, user=request.user)
     if review.is_editable():
         review.delete()
     return redirect('view_reviews')
