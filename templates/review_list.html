@@ -1,19 +1,23 @@
+<!-- review_list.html -->
 <h2>All Reviews</h2>
-<a href="{% url 'add_review' %}">Write a Review</a>
-<ul>
-  {% for review in reviews %}
-    <li>
-      {% if not review.anonymous %} <strong>{{ review.user.username }}</strong> {% endif %}
-      <br>
-      {{ review.text }}<br>
-      Avg Rating: {{ review.average_rating|floatformat:1 }}<br>
-      {% if review.user == request.user %}
-        <a href="{% url 'edit_review' review.pk %}">Edit</a>
-        <a href="{% url 'delete_review' review.pk %}">Delete</a>
-      {% endif %}
-      <a href="{% url 'flag_review' review.pk %}">Report</a>
-    </li>
-  {% empty %}
-    <li>No reviews yet.</li>
-  {% endfor %}
-</ul>
+{% for review in reviews %}
+  <div style="border: 1px solid #ccc; padding: 10px; margin: 15px 0;">
+    <p><strong>{{ review.user.username }}</strong> 
+      {% if review.anonymous %}(Anonymous){% endif %} 
+      on {{ review.created_at|date:"Y-m-d H:i" }}</p>
+    
+    <p><strong>Hospital:</strong> {{ review.hospital.name }}</p>
+    {% if review.doctor %}<p><strong>Doctor:</strong> {{ review.doctor.name }}</p>{% endif %}
+
+    <p><strong>Service Quality:</strong> {{ review.service_quality }}/5</p>
+    <p><strong>Cost Transparency:</strong> {{ review.cost_transparency }}/5</p>
+    <p><strong>Facility Standards:</strong> {{ review.facility_standards }}/5</p>
+    <p><strong>Treatment Effectiveness:</strong> {{ review.treatment_effectiveness }}/5</p>
+
+    <p><strong>Average Rating:</strong> {{ review.average_rating|floatformat:1 }}/5</p>
+
+    <p><strong>Review:</strong> {{ review.text }}</p>
+  </div>
+{% empty %}
+  <p>No reviews yet.</p>
+{% endfor %}
