@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Review, Hospital, Doctor
 from .forms import ReviewForm, ReviewFlagForm
 from django.utils import timezone
+from django.db.models import Avg
+
 
 def is_verified_patient(user):
     return user.groups.filter(name='VerifiedPatients').exists()
@@ -54,8 +56,32 @@ def delete_review(request, pk):
     return redirect('view_reviews')
 
 def view_reviews(request):
-    reviews = Review.objects.all().order_by('-created_at')
-    return render(request, 'review_list.html', {'reviews': reviews})
+    reviews = Review.objects.all()
+
+    # Filtering by Hospital
+    hospital_filter = request.GET.get('hospital')
+    if hospital_filter:
+        reviews = reviews.filter(hospital__id=hospital_filter)
+
+    # Filtering by Doctor
+    doctor_filter = request.GET.get('doctor')
+    if doctor_filter:
+        reviews = reviews.filter(doctor__id=doctor_filter)
+
+    # Filtering by Rating
+    service_quality_filter = request.GET.get('service_quality')
+    if service_quality_filter:
+        reviews = reviews.filter(service_quality=service_quality_filter)
+    
+    # Add similar filters for other ratings (cost_transparency, etc.) if needed
+    
+    # Calculate average ratings for filtered reviews
+    average_rating = reviews.aggregate(Avg('service_quality'))['service_quality__avg']
+
+    return render(request, 'review_list.html', {
+        'reviews': reviews,
+        'average_rating': average_rating
+    })
 
 @login_required
 def flag_review(request, pk):
