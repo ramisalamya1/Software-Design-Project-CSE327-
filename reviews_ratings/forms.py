@@ -20,3 +20,6 @@ class ReviewFlagForm(forms.ModelForm):
     class Meta:
         model = ReviewFlag
         fields = ['reason']
+        widgets = {
+            'reason': forms.Textarea(attrs={'rows': 3, 'cols': 40, 'placeholder': 'Explain why you are flagging this review.'}),
+        }
