@@ -26,7 +26,8 @@ class Review(models.Model):
 
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-
+    
+    @property
     def is_editable(self):
         return timezone.now() <= self.created_at + timedelta(minutes=60)
 
