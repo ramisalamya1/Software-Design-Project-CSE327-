@@ -1,18 +1,85 @@
-<!-- templates/home.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medical Records</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f6f8;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        .nav-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-menu li {
+            margin: 15px 0;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: #fff;
+            border-radius: 6px;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            background-color: #2980b9;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Global Medical Records Section</h1>
-    <ul>
-        <li><a href="{% url 'medical_records:upload_record' %}">Upload Medical Record</a></li>
-        <li><a href="{% url 'medical_records:view_records' %}">View Medical Records</a></li>
-        <li><a href="{% url 'medical_records:share_record' 1 %}">Share Record</a></li>  <!-- Example link -->
-        <li><a href="{% url 'medical_records:download_pdf' 1 %}">Download Record PDF</a></li>  <!-- Example link -->
-    </ul>
+    <div class="container">
+        <header>
+            <h1>🌍 Global Medical Records</h1>
+            <p class="subtitle">Securely manage, view, and share your health records anytime, anywhere.</p>
+        </header>
+
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="{% url 'medical_records:upload_record' %}">📤 Upload Medical Record</a></li>
+                <li><a href="{% url 'medical_records:view_records' %}">📁 View Medical Records</a></li>
+                <li><a href="{% url 'medical_records:share_record' 1 %}">🔗 Share Record</a></li>
+                <li><a href="{% url 'medical_records:download_pdf' 1 %}">📄 Download Record PDF</a></li>
+            </ul>
+        </nav>
+    </div>
 </body>
 </html>
