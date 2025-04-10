@@ -2,12 +2,10 @@
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Review, Hospital, Doctor
+from .models import Review, Hospital, Doctor, ReviewFlag
 from .forms import ReviewForm, ReviewFlagForm
 from django.utils import timezone
 from django.db.models import Avg
-
-
 
 def is_verified_patient(user):
     return user.groups.filter(name='VerifiedPatients').exists()
@@ -57,30 +55,22 @@ def delete_review(request, pk):
     return redirect('view_reviews')
 
 def view_reviews(request):
- 
-    # Filtering logic
     reviews = Review.objects.all()
-    
-    # Get hospitals and doctors to pass to the template
     hospitals = Hospital.objects.all()
     doctors = Doctor.objects.all()
 
-    # Filtering by Hospital
     hospital_filter = request.GET.get('hospital')
     if hospital_filter:
         reviews = reviews.filter(hospital__id=hospital_filter)
 
-    # Filtering by Doctor
     doctor_filter = request.GET.get('doctor')
     if doctor_filter:
         reviews = reviews.filter(doctor__id=doctor_filter)
 
-    # Filtering by Rating
     service_quality_filter = request.GET.get('service_quality')
     if service_quality_filter:
         reviews = reviews.filter(service_quality=service_quality_filter)
         
-    # Calculate average ratings for filtered reviews
     average_rating = reviews.aggregate(Avg('service_quality'))['service_quality__avg']
 
     return render(request, 'review_list.html', {
@@ -96,6 +86,11 @@ def flag_review(request, pk):
         return render(request, 'not_verified.html')
 
     review = get_object_or_404(Review, pk=pk)
+
+    # Check if the user has already flagged the review
+    if ReviewFlag.objects.filter(review=review, reported_by=request.user).exists():
+        return redirect('view_reviews')  # Already flagged, no need to report again
+
     form = ReviewFlagForm(request.POST or None)
     if form.is_valid():
         flag = form.save(commit=False)
@@ -103,4 +98,5 @@ def flag_review(request, pk):
         flag.review = review
         flag.save()
         return redirect('view_reviews')
+
     return render(request, 'flag_review.html', {'form': form})

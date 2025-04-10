@@ -15,7 +15,6 @@ class ReviewForm(forms.ModelForm):
             'text': forms.Textarea(attrs={'rows': 5, 'cols': 40, 'placeholder': 'Write your experience here...'}),
         }
 
-
 class ReviewFlagForm(forms.ModelForm):
     class Meta:
         model = ReviewFlag

@@ -1,4 +1,5 @@
 <!-- review_list.html -->
+
 <h2>All Reviews</h2>
 
 <!-- Filter Form -->
@@ -33,12 +34,9 @@
         {% endfor %}
     </select>
 
-    <!-- Add other filters for cost_transparency, facility_standards, etc. -->
-
     <button type="submit">Filter</button>
 </form>
 
-<!-- Display Average Rating -->
 {% if average_rating %}
     <p><strong>Average Service Quality Rating:</strong> {{ average_rating|floatformat:1 }}/5</p>
 {% endif %}
@@ -70,6 +68,11 @@
     {% if user == review.user and review.is_editable %}
       <a href="{% url 'edit_review' review.pk %}">Edit</a> |
       <a href="{% url 'delete_review' review.pk %}">Delete</a>
+    {% endif %}
+
+    <!-- Flag option -->
+    {% if not review.flags.filter(reported_by=user).exists %}
+      <a href="{% url 'flag_review' review.pk %}">Flag this review</a>
     {% endif %}
   </div>
 {% empty %}
