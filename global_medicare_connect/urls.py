@@ -18,9 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from booking.views import *
 from medical_records import views
+from hospital_search.views import *
+
 
 urlpatterns = [
-    path('', home, name="home"),
+    path('search/', include('hospital_search.urls')),
+    path('booking/', include('booking.urls')),
     path('admin/', admin.site.urls),
     path('medical/', include('medical_records.urls')),
     path('login/', views.login_view, name='login'), 
