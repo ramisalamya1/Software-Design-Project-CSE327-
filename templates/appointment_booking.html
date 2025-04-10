@@ -3,20 +3,38 @@
 <div class="page">
     <div class ="hospital">
         <!-- todo add hospital information selected --> 
-        <div class="hospital-details p-4 bg-light rounded shadow-sm">
-            <img src="https://via.placeholder.com/100x60?text=Hospital" alt="Hospital Image" class="mb-2 rounded"><br>
-                <h2>{{ hospital.name }}</h2><br>
+        <div class="hospital-details">
+            <img src="https://via.placeholder.com/100x60?text=Hospital" alt="Hospital Image" class="mb-2 rounded"><br><br>
+                <h2 class="hospital-name">{{ hospital.name }}</h2><br>
+                <div class="hospital-info">
                 <p><strong>Location:</strong> {{ hospital.city }}, {{ hospital.country }}</p><br>
                 <p><strong>Treatment:</strong> {{ hospital.treatment_type }}</p><br>
-                <p><strong>Accreditation:</strong> <span class="badge bg-primary">{{ hospital.accreditation }}</span></p><br>
+                <p><strong>Accreditation:</strong> 
+                {% if hospital.accreditation %}
+                <span class="badge badge-accreditation">{{ hospital.accreditation }}</span><br><br>
+                {% else %}
+                <span class="badge badge-muted">Not accredited</span><br><br>
+                {% endif %}
                 <p><strong>Cost Estimate:</strong> <span class="badge bg-warning text-dark">₹{{ hospital.cost_estimate }}</span></p><br>
-                <p><strong>Insurance Accepted:</strong> <br>
+                <p><strong>Insurance Accepted:</strong>
                     {% if hospital.accepts_insurance %}
                         <span class="badge bg-success">Yes</span>
                     {% else %}
                         <span class="badge bg-danger">No</span>
                     {% endif %}
-                </p>
+                </p><br>
+                <p><strong>Facilities:</strong></p>
+                {% if hospital.facilities.exists %}
+                    <p><strong>Facilities:</strong></p>
+                        <ul>
+                        {% for facility in hospital.facilities.all %}
+                            <li>{{ facility.name }}</li>
+                        {% endfor %}
+                        </ul>
+                {% else %}
+                    <p><em>No additional facilities listed.</em></p>
+                {% endif %}
+            </div>
             </p><br>
         </div>        
     </div>
@@ -46,12 +64,19 @@
             <label for="date">Appointment Date:</label><br>
             <input type="date" id="date" name="date" required><br><br>
         
+            <p class="message">After booking appointment you will have to make payment to confirm appointment</p>
             <button type="submit">Book Appointment</button>
         </form>
     </div>
 </div>
 
 <style>
+    .message{
+        color: gray;
+        font-size: small;
+        width: 500px;
+
+    }
 
     .page{
         display: flex;
@@ -116,8 +141,68 @@
         font-size: 16px;
     }
 
-    button:hover {
-        background-color: #218838;
-    }
+
+.hospital-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+.hospital-name {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.hospital-info p {
+    font-size: 16px;
+    margin: 6px 0;
+}
+
+.hospital-facilities {
+    margin-top: 15px;
+}
+
+.hospital-facilities ul {
+    padding-left: 20px;
+    margin: 5px 0;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-left: 6px;
+}
+
+.badge-accreditation {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.badge-cost {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.badge-success {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.badge-muted {
+    background-color: #e0e0e0;
+    color: #666;
+}
+
 </style>
 {% endblock body %}
