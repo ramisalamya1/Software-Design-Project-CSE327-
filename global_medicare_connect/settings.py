@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'hospital_search',
     'hospital_comparison',
     'admin_management',
+    'package_customization',
 ]
 
 MIDDLEWARE = [
@@ -113,6 +114,8 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+
 
 
 # Static files (CSS, JavaScript, Images)
