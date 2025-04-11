@@ -57,6 +57,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'global_medicare_connect.urls'
+
+AUTH_USER_MODEL = "admin_management.CustomUser"
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
