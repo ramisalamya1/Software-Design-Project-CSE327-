@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class HospitalComparisonConfig(AppConfig):
+class HospitalSearchConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'hospital_comparison'
+    name = 'hospital_search'
