@@ -50,5 +50,3 @@ def hospital_search_view(request):
         "hospitals": hospitals,
         "treatment_types": treatment_types,
     })
-
-
