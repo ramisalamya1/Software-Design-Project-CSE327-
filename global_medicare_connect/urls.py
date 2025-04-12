@@ -19,14 +19,14 @@ from django.urls import path, include
 from booking.views import *
 from medical_records import views
 from hospital_search.views import *
-
+from admin_management.views import *
 
 urlpatterns = [
-    path('search/', include('hospital_search.urls')),
+    path('', include('hospital_search.urls')),
+    path('admin_management/', include('admin_management.urls')),
     path('booking/', include('booking.urls')),
     path('admin/', admin.site.urls),
     path('medical/', include('medical_records.urls')),
-    path('login/', views.login_view, name='login'), 
+    path('accounts/login/', views.login_view, name='login'), 
     path('register/', views.register, name='register'), 
-
 ]
