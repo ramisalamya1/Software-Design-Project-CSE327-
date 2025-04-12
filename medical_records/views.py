@@ -21,9 +21,15 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            # Redirect to the page the user was trying to access, or default to 'home'
-            next_page = request.GET.get('next', 'home')  
-            return redirect(next_page)
+            # for admin roles
+            if user is not None and user.role == 'admin':
+                login(request, user)
+                return redirect('admin_management:admin_dashboard')
+
+            else:
+                # Redirect to the page the user was trying to access, or default to 'home'
+                next_page = request.GET.get('next', 'home')  
+                return redirect(next_page)
     else:
         form = AuthenticationForm()
 

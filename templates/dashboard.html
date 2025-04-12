@@ -2,24 +2,5 @@
 {% block body %}
 <body>
     <h1>Welcome to the Dashboard</h1>
-
-    {% if user.is_authenticated %}
-        <p>Hello, {{ user.username }}!</p>
-        {% if user.is_staff %}
-            <a href="/admin/">Go to Admin Panel</a>
-        {% endif %}
-        <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit">Logout</button>
-        </form>
-    {% else %}
-        <h2>Admin Login</h2>
-        <form method="post" action="{% url 'login' %}">
-            {% csrf_token %}
-            <input type="text" name="username" placeholder="Username" required><br>
-            <input type="password" name="password" placeholder="Password" required><br>
-            <button type="submit">Login</button>
-        </form>
-    {% endif %}
 </body>
 {% endblock body %}
