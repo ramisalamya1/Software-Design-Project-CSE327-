@@ -8,7 +8,7 @@
     <select name="hospital" id="hospital">
         <option value="">All Hospitals</option>
         {% for hospital in hospitals %}
-            <option value="{{ hospital.id }}" {% if hospital.id == request.GET.hospital %}selected{% endif %}>
+            <option value="{{ hospital.id }}" {% if hospital.id|stringformat:"s" == request.GET.hospital %}selected{% endif %}>
                 {{ hospital.name }}
             </option>
         {% endfor %}
@@ -18,7 +18,7 @@
     <select name="doctor" id="doctor">
         <option value="">All Doctors</option>
         {% for doctor in doctors %}
-            <option value="{{ doctor.id }}" {% if doctor.id == request.GET.doctor %}selected{% endif %}>
+            <option value="{{ doctor.id }}" {% if doctor.id|stringformat:"s" == request.GET.doctor %}selected{% endif %}>
                 {{ doctor.name }}
             </option>
         {% endfor %}
@@ -27,15 +27,25 @@
     <label for="service_quality">Service Quality:</label>
     <select name="service_quality" id="service_quality">
         <option value="">All Ratings</option>
-        {% for i in 1 2 3 4 5 %}
-            <option value="{{ i }}" {% if i == request.GET.service_quality %}selected{% endif %}>
-                {{ i }}
-            </option>
-        {% endfor %}
+        {% with "12345"|make_list as ratings %}
+            {% for i in ratings %}
+                <option value="{{ i }}" {% if i == request.GET.service_quality %}selected{% endif %}>
+                    {{ i }}
+                </option>
+            {% endfor %}
+        {% endwith %}
+    </select>
+
+    <label for="anonymous">Anonymity:</label>
+    <select name="anonymous" id="anonymous">
+        <option value="">All</option>
+        <option value="1" {% if request.GET.anonymous == '1' %}selected{% endif %}>Anonymous</option>
+        <option value="0" {% if request.GET.anonymous == '0' %}selected{% endif %}>Not Anonymous</option>
     </select>
 
     <button type="submit">Filter</button>
 </form>
+
 
 {% if average_rating %}
     <p><strong>Average Service Quality Rating:</strong> {{ average_rating|floatformat:1 }}/5</p>
@@ -71,8 +81,8 @@
     {% endif %}
 
     <!-- Flag option -->
-    {% if not review.flags.filter(reported_by=user).exists %}
-      <a href="{% url 'flag_review' review.pk %}">Flag this review</a>
+    {% if not review.already_flagged %}
+    <a href="{% url 'flag_review' review.pk %}">Flag this review</a>
     {% endif %}
   </div>
 {% empty %}
