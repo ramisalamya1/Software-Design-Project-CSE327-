@@ -14,7 +14,7 @@ class Doctor(models.Model):
 class Review(models.Model):
     RATING_CHOICES = [(i, str(i)) for i in range(1, 6)]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, null=True, blank=True)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, null=True, blank=True)
     anonymous = models.BooleanField(default=False)
@@ -26,7 +26,7 @@ class Review(models.Model):
 
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     @property
     def is_editable(self):
         return timezone.now() <= self.created_at + timedelta(minutes=60)

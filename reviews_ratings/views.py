@@ -1,7 +1,6 @@
 # reviews/views.py
 
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
 from .models import Review, Hospital, Doctor, ReviewFlag
 from .forms import ReviewForm, ReviewFlagForm
 from django.utils import timezone
@@ -9,32 +8,18 @@ from django.db.models import Avg
 
 
 
-def is_verified_patient(user):
-    return user.groups.filter(name='VerifiedPatients').exists()
-
-@login_required
 def add_review(request):
-    if not is_verified_patient(request.user):
-        return render(request, 'not_verified.html')
-
     form = ReviewForm(request.POST or None)
     if form.is_valid():
         review = form.save(commit=False)
-        review.user = request.user
-        
-        if not request.user.groups.filter(name='VerifiedPatients').exists():
-            return render(request, 'not_verified.html')
-        
+        review.user = None  # Optional: if you still have the user field
         review.save()
         return redirect('view_reviews')
     return render(request, 'review_form.html', {'form': form})
 
-@login_required
-def edit_review(request, pk):
-    if not is_verified_patient(request.user):
-        return render(request, 'not_verified.html')
 
-    review = get_object_or_404(Review, pk=pk, user=request.user)
+def edit_review(request, pk):
+    review = get_object_or_404(Review, pk=pk)
 
     if not review.is_editable():
         return render(request, 'edit_denied.html')
@@ -46,19 +31,15 @@ def edit_review(request, pk):
 
     return render(request, 'review_form.html', {'form': form, 'edit': True})
 
-@login_required
-def delete_review(request, pk):
-    if not is_verified_patient(request.user):
-        return render(request, 'not_verified.html')
 
-    review = get_object_or_404(Review, pk=pk, user=request.user)
+def delete_review(request, pk):
+    review = get_object_or_404(Review, pk=pk)
     if review.is_editable():
         review.delete()
     return redirect('view_reviews')
-from django.db.models import Avg
+
 
 def view_reviews(request):
-    user = request.user
     reviews = Review.objects.all().prefetch_related('flags')
 
     # Get hospitals and doctors to pass to the template
@@ -87,9 +68,9 @@ def view_reviews(request):
     elif anonymous_filter == '0':
         reviews = reviews.filter(anonymous=False)
 
-    # Annotate each review with flag status for this user
+    # Annotate each review with flag status (no user, so always False)
     for review in reviews:
-        review.already_flagged = review.flags.filter(reported_by=user).exists()
+        review.already_flagged = False
 
     # Calculate average rating for filtered reviews
     average_rating = reviews.aggregate(Avg('service_quality'))['service_quality__avg']
@@ -99,25 +80,17 @@ def view_reviews(request):
         'average_rating': average_rating,
         'hospitals': hospitals,
         'doctors': doctors,
-        'user': user,  # Optional if you're not using it directly in template
     })
 
 
-@login_required
 def flag_review(request, pk):
-    if not is_verified_patient(request.user):
-        return render(request, 'not_verified.html')
-
     review = get_object_or_404(Review, pk=pk)
-    
-    # Check if the user has already flagged the review
-    if ReviewFlag.objects.filter(review=review, reported_by=request.user).exists():
-        return redirect('view_reviews')  # Already flagged, no need to report again
 
+    # Check if flag already exists (no user, so skip this check)
     form = ReviewFlagForm(request.POST or None)
     if form.is_valid():
         flag = form.save(commit=False)
-        flag.reported_by = request.user
+        flag.reported_by = None  # Optional: if your model allows null
         flag.review = review
         flag.save()
         return redirect('view_reviews')
