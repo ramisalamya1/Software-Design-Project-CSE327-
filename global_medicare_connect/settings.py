@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'hospital_comparison',
     'admin_management',
     'medical_records.apps.MedicalRecordsConfig',  # Add this line
+    'package_customization'
 ]
 
 
