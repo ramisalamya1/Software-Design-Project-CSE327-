@@ -1,0 +1,41 @@
+[
+    {
+        "model": "hospital_comparison.hospitalstats",
+        "pk": 1,
+        "fields": {
+            "hospital": 1,
+            "recovery_rate": 95.5,
+            "icu_capacity": 50,
+            "has_robotic_surgery": true,
+            "medical_equipment": "Latest MRI, CT Scan, and Robotic Surgery System",
+            "post_treatment_support": "24/7 telemedicine consultation available",
+            "accreditation": "NABH"
+        }
+    },
+    {
+        "model": "hospital_comparison.hospitalstats",
+        "pk": 2,
+        "fields": {
+            "hospital": 2,
+            "recovery_rate": 92.0,
+            "icu_capacity": 45,
+            "has_robotic_surgery": true,
+            "medical_equipment": "Advanced Cardiac Care Unit, Modern Diagnostic Equipment",
+            "post_treatment_support": "Regular follow-up consultations for 3 months",
+            "accreditation": "JCI"
+        }
+    },
+    {
+        "model": "hospital_comparison.hospitalstats",
+        "pk": 3,
+        "fields": {
+            "hospital": 3,
+            "recovery_rate": 88.5,
+            "icu_capacity": 60,
+            "has_robotic_surgery": false,
+            "medical_equipment": "Standard medical equipment and diagnostic facilities",
+            "post_treatment_support": "Weekly follow-up for first month",
+            "accreditation": "NABH"
+        }
+    }
+]

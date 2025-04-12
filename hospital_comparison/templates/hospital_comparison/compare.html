@@ -1,71 +1,254 @@
 {% load static %}
+{% load comparison_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Hospital Comparison</title>
+    <title>🏥 Hospital Comparison | Global Medicare Connect</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .hospital-card { transition: all 0.3s ease; border: 2px solid transparent; }
-        .hospital-card:hover { border-color: #007bff; }
-        .highlight { border-color: #28a745 !important; box-shadow: 0 0 10px rgba(40,167,69,0.5); }
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --light: #f8f9fa;
+            --purple: #9b59b6;
+        }
+
+        body {
+            background: var(--light);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .header {
+            background: linear-gradient(to right, var(--primary), var(--purple));
+            color: white;
+            padding: 2rem;
+            border-radius: 0 0 30px 30px;
+            text-align: center;
+        }
+
+        .hospital-card {
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .hospital-card:hover {
+            transform: scale(1.015);
+        }
+
+        .recommended-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--success);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .stat-section {
+            padding: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .stat-label {
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-icon {
+            font-size: 1rem;
+            margin-right: 6px;
+            color: var(--secondary);
+        }
+
+        .stat-value {
+            font-size: 1.05rem;
+            color: var(--purple);
+        }
+
+        .progress {
+            height: 16px;
+            border-radius: 20px;
+        }
+
+        .feature-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: white;
+        }
+
+        .feature-yes {
+            background-color: var(--success);
+        }
+
+        .feature-no {
+            background-color: var(--danger);
+        }
+
+        .btn-action {
+            background: var(--purple);
+            color: white;
+            border-radius: 8px;
+            padding: 10px 20px;
+            margin-left: 10px;
+        }
+
+        .btn-action:hover {
+            background: var(--secondary);
+        }
+
+        .live-chat-box {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .chat-header {
+            background-color: var(--secondary);
+            color: white;
+            padding: 10px;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .chat-body {
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+        }
+
+        .chat-footer {
+            padding: 10px;
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 5px;
+        }
+
+        a {
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
-<div class="container py-5">
-    <h2 class="text-center mb-4">🏥 Hospital Comparison</h2>
 
+<div class="header">
+    <h1>🏥 Hospital Comparison</h1>
     {% if hospitals %}
-        <div class="row mb-4">
+        <p>Comparing <strong>{{ hospitals|length }}</strong> hospital{{ hospitals|length|pluralize }} to help you make the best choice</p>
+    {% endif %}
+</div>
+
+<div class="container my-5">
+    {% if not hospitals %}
+        <div class="alert alert-info text-center shadow-sm">
+            <p>⚠️ No hospitals selected. Please select some to compare.</p>
+            <a href="{% url 'hospital_search' %}" class="btn btn-primary mt-2"><i class="fas fa-search me-2"></i>Search Hospitals</a>
+        </div>
+    {% else %}
+        <div class="d-flex justify-content-end mb-4">
+            <button class="btn btn-action" onclick="toggleChat()">💬 Live Chat</button>
+            <button class="btn btn-action" onclick="alert('Export coming soon!')">📁 Export Comparison</button>
+        </div>
+
+        <div class="row">
             {% for hospital in hospitals %}
-                <div class="col-md-4 mb-3">
-                    <div class="p-3 bg-white rounded shadow hospital-card {% if hospital.id == recommended.id %}highlight{% endif %}">
-                        <h5>{{ hospital.name }}</h5>
-                        <p class="mb-1"><strong>{{ hospital.city }}, {{ hospital.country }}</strong></p>
-                        <p>🏥 <strong>{{ stats_map.hospital.id.icu_capacity }}</strong> ICU Beds</p>
-                        <p>💉 <strong>{{ stats_map.hospital.id.recovery_rate|floatformat:0 }}%</strong> Recovery</p>
-                        <p>✅ <strong>{{ hospital.accreditation }}</strong> Accreditations</p>
-                        <p>🩺 <strong>{{ stats_map.hospital.id.doctor_availability|floatformat:0 }}%</strong> Doctor Availability</p>
-                        <p>💰 ₹{{ hospital.cost_estimate }}</p>
+                <div class="col-md-4 mb-4">
+                    <div class="hospital-card p-3">
+                        {% if hospital.id == recommended.id %}
+                        <div class="recommended-badge">⭐ Recommended</div>
+                        {% endif %}
+
+                        <h4 class="text-primary">{{ hospital.name }}</h4>
+                        <p><span class="stat-icon">🌍</span><strong>Location:</strong> {{ hospital.city }}, {{ hospital.country }}</p>
+                        <p><span class="stat-icon">💉</span><strong>Treatment:</strong> {{ hospital.treatment_type }}</p>
+
+                        <div class="stat-section">
+                            <div class="stat-label">❤️ Recovery Rate</div>
+                            <div class="progress">
+                                <div class="progress-bar bg-success"
+                                     style="width: {{ stats_map|get_item:hospital.id|get_attr:'recovery_rate' }}%">
+                                    {{ stats_map|get_item:hospital.id|get_attr:'recovery_rate' }}%
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-section">
+                            <div class="stat-label">🏥 ICU Capacity</div>
+                            <div class="stat-value">{{ stats_map|get_item:hospital.id|get_attr:"icu_capacity" }} beds</div>
+                        </div>
+
+                        <div class="stat-section">
+                            <div class="stat-label">🤖 Robotic Surgery</div>
+                            {% if stats_map|get_item:hospital.id|get_attr:"has_robotic_surgery" %}
+                                <span class="feature-badge feature-yes">Available</span>
+                            {% else %}
+                                <span class="feature-badge feature-no">Not Available</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="stat-section">
+                            <div class="stat-label">💸 Cost Estimate</div>
+                            <div class="stat-value">₹{{ hospital.cost_estimate }}</div>
+                        </div>
+
+                        <div class="stat-section">
+                            <div class="stat-label">🛡️ Accreditation</div>
+                            <div class="stat-value">{{ stats_map|get_item:hospital.id|get_attr:"accreditation" }}</div>
+                        </div>
+
+                        <div class="stat-section">
+                            <div class="stat-label">🧪 Medical Equipment</div>
+                            <small>{{ stats_map|get_item:hospital.id|get_attr:"medical_equipment" }}</small>
+                        </div>
+
+                        <div class="stat-section">
+                            <div class="stat-label">💬 Post-Treatment</div>
+                            <small>{{ stats_map|get_item:hospital.id|get_attr:"post_treatment_support" }}</small>
+                        </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
-
-        <div class="table-responsive mb-4">
-            <table class="table table-bordered table-hover bg-white">
-                <thead class="table-light">
-                    <tr>
-                        <th>Criteria</th>
-                        {% for hospital in hospitals %}
-                            <th>{{ hospital.name }}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td>Recovery Rate</td>{% for h in hospitals %}<td>{{ stats_map.h.id.recovery_rate|floatformat:0 }}%</td>{% endfor %}</tr>
-                    <tr><td>Accreditations</td>{% for h in hospitals %}<td>{{ h.accreditation }}</td>{% endfor %}</tr>
-                    <tr><td>ICU Capacity</td>{% for h in hospitals %}<td>{{ stats_map.h.id.icu_capacity }} beds</td>{% endfor %}</tr>
-                    <tr><td>Robotic Surgery</td>{% for h in hospitals %}<td>{% if stats_map.h.id.robotic_surgery %}✅{% else %}❌{% endif %}</td>{% endfor %}</tr>
-                    <tr><td>Follow-up Period</td>{% for h in hospitals %}<td>{{ stats_map.h.id.post_treatment_support }}</td>{% endfor %}</tr>
-                    <tr><td>Average Cost</td>{% for h in hospitals %}<td>₹{{ h.cost_estimate }}</td>{% endfor %}</tr>
-                    <tr><td>Doctor Availability</td>{% for h in hospitals %}<td>{{ stats_map.h.id.doctor_availability|floatformat:0 }}%</td>{% endfor %}</tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="text-end mb-4">
-            <button class="btn btn-primary">⬇️ Export Report</button>
-        </div>
-
-        <div class="p-4 bg-primary text-white rounded text-center">
-            <h5>Need Help?</h5>
-            <button class="btn btn-light mt-2">💬 Live Chat Support</button>
-        </div>
-    {% else %}
-        <div class="alert alert-warning text-center">No hospitals selected for comparison.</div>
     {% endif %}
 </div>
+
+<!-- Live Chat Widget -->
+<div class="live-chat-box" id="chatBox">
+    <div class="chat-header">💬 Chat With Coordinator</div>
+    <div class="chat-body">
+        <p><strong>Support:</strong> Hello! How can I help you?</p>
+    </div>
+    <div class="chat-footer">
+        <input type="text" class="chat-input" placeholder="Type your message...">
+    </div>
+</div>
+
+<script>
+    function toggleChat() {
+        const box = document.getElementById('chatBox');
+        box.style.display = box.style.display === "block" ? "none" : "block";
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

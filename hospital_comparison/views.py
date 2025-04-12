@@ -2,21 +2,12 @@ from django.shortcuts import render
 from hospital_search.models import Hospital
 from .models import HospitalStats
 
-
 def compare_hospitals_view(request):
     """
     Display a comparison view for selected hospitals.
 
-    :param request: Django HTTP request with optional `ids` query param (comma-separated hospital IDs).
-    :return: Rendered comparison template with hospitals, their stats, and system recommendation.
-
-    Query Parameters:
-        - ids (str): Comma-separated hospital IDs to compare.
-
-    Template Context:
-        - hospitals (QuerySet): Selected hospitals to compare.
-        - stats_map (dict): Mapping of hospital IDs to their HospitalStats.
-        - recommended (Hospital): Best option based on recovery rate and cost efficiency.
+    :param request: Django HTTP request with optional ids query param (comma-separated hospital IDs).
+    :return: Rendered template with hospitals, stats_map, and recommendation.
     """
     ids = request.GET.get("ids")
     hospitals = []
@@ -35,13 +26,10 @@ def compare_hospitals_view(request):
             recommended = max(
                 hospitals,
                 key=lambda h: (
-                    stats_map[h.id].recovery_rate / h.cost_estimate
+                    float(stats_map[h.id].recovery_rate) / float(h.cost_estimate)
                     if h.id in stats_map and h.cost_estimate > 0 else 0
                 )
             )
-
-        # Optional: sort hospitals by name
-        hospitals = sorted(hospitals, key=lambda h: h.name)
 
     return render(request, "hospital_comparison/compare.html", {
         "hospitals": hospitals,

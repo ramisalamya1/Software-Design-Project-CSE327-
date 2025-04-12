@@ -1,10 +1,8 @@
 from django.urls import path
-from .views import compare_hospitals_view
+from . import views
 
 app_name = "hospital_comparison"
 
 urlpatterns = [
-    path('', compare_hospitals_view, name='compare'),
+    path("", views.compare_hospitals_view, name="compare"),
 ]
-
-
