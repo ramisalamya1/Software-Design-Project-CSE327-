@@ -9,14 +9,18 @@ from django.db.models import Avg
 
 
 def add_review(request):
-    form = ReviewForm(request.POST or None)
-    if form.is_valid():
-        review = form.save(commit=False)
-        review.user = None  # Optional: if you still have the user field
-        review.save()
-        return redirect('view_reviews')
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            # Automatically assign the current user to the review, even if they are anonymous
+            review = form.save(commit=False)
+            review.user = None  # Since there is no authentication, assign None or leave it blank
+            review.save()
+            return redirect('view_reviews')  # Redirect to view reviews after saving
+    else:
+        form = ReviewForm()
+    
     return render(request, 'review_form.html', {'form': form})
-
 
 def edit_review(request, pk):
     review = get_object_or_404(Review, pk=pk)

@@ -14,7 +14,7 @@ class Doctor(models.Model):
 class Review(models.Model):
     RATING_CHOICES = [(i, str(i)) for i in range(1, 6)]
 
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)  # ✅ User is now optional
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, null=True, blank=True)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, null=True, blank=True)
     anonymous = models.BooleanField(default=False)
@@ -35,7 +35,7 @@ class Review(models.Model):
         return (self.service_quality + self.cost_transparency + self.facility_standards + self.treatment_effectiveness) / 4
 
 class ReviewFlag(models.Model):
-    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name="flags")  # ✅ Added
     reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
     reason = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
