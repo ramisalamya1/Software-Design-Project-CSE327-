@@ -1,6 +1,7 @@
 <!-- Optional enhancement to show larger textarea -->
 <form method="post">
     {% csrf_token %}
+    {% load widget_tweaks %}
     {{ form.non_field_errors }}
 
     {{ form.hospital.label_tag }} {{ form.hospital }}
