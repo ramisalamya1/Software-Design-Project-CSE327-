@@ -20,7 +20,7 @@ class Doctor(models.Model):
 class Review(models.Model):
     RATING_CHOICES = [(i, str(i)) for i in range(1, 6)]
     
-    patient_id = models.CharField(max_length=50)
+    patient_id = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return f"Review by {self.patient_id}"

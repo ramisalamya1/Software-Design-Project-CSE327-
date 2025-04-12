@@ -15,6 +15,13 @@
 
     {{ form.text.label_tag }}
     {{ form.text|add_class:"custom-textarea" }}
+    
+    <p>
+        {{ form.patient_id.label_tag }}<br>
+        {{ form.patient_id }}
+        {{ form.patient_id.errors }}
+      </p>
+      
 
     <button type="submit">{% if edit %}Update{% else %}Submit{% endif %}</button>
 </form>

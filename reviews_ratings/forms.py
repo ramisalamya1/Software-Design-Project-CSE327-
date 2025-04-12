@@ -9,7 +9,7 @@ class ReviewForm(forms.ModelForm):
         fields = [
             'hospital', 'doctor', 'anonymous',
             'service_quality', 'cost_transparency',
-            'facility_standards', 'treatment_effectiveness', 'text'
+            'facility_standards', 'treatment_effectiveness', 'text', 'patient_id',
         ]
         widgets = {
             'text': forms.Textarea(attrs={'rows': 5, 'cols': 40, 'placeholder': 'Write your experience here...'}),
