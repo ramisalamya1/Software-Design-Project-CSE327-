@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 
+app_name = 'admin_management'
+
 urlpatterns = [
     path('', views.admin_dashboard, name='admin_dashboard'),
     path('pending-providers/', views.pending_providers, name='pending_providers'),

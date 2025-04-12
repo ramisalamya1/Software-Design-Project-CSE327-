@@ -2,15 +2,12 @@ from django.shortcuts import render, get_object_or_404,redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import CustomUser, ProviderProfile, AdminActionLog
 
-def home(request):
-    return render(request, 'home.html')
-
 # user logged in is an admin
 def is_admin(user):
     return user.is_authenticated and user.role == 'admin'
 
-# @login_required
-# @user_passes_test(is_admin)
+@login_required
+@user_passes_test(is_admin)
 def admin_dashboard(request):
     return render(request, 'dashboard.html')
 

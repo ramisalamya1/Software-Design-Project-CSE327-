@@ -22,7 +22,7 @@ from hospital_search.views import *
 from admin_management.views import *
 
 urlpatterns = [
-    path('', include('hospital_search.urls')),
+    path('search/', include('hospital_search.urls')),
     path('admin_management/', include('admin_management.urls')),
     path('booking/', include('booking.urls')),
     path('admin/', admin.site.urls),
