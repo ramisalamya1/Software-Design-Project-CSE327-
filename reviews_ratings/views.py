@@ -25,7 +25,7 @@ def add_review(request):
 def edit_review(request, pk):
     review = get_object_or_404(Review, pk=pk)
 
-    if not review.is_editable():
+    if not review.is_editable:
         return render(request, 'edit_denied.html')
 
     form = ReviewForm(request.POST or None, instance=review)
@@ -38,7 +38,7 @@ def edit_review(request, pk):
 
 def delete_review(request, pk):
     review = get_object_or_404(Review, pk=pk)
-    if review.is_editable():
+    if review.is_editable:
         review.delete()
     return redirect('view_reviews')
 
@@ -90,11 +90,10 @@ def view_reviews(request):
 def flag_review(request, pk):
     review = get_object_or_404(Review, pk=pk)
 
-    # Check if flag already exists (no user, so skip this check)
     form = ReviewFlagForm(request.POST or None)
     if form.is_valid():
         flag = form.save(commit=False)
-        flag.reported_by = None  # Optional: if your model allows null
+        flag.reported_by = None  
         flag.review = review
         flag.save()
         return redirect('view_reviews')

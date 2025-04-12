@@ -75,9 +75,9 @@
 
     <p><strong>Review:</strong> {{ review.text }}</p>
 
-    {% if user == review.user and review.is_editable %}
-      <a href="{% url 'edit_review' review.pk %}">Edit</a> |
-      <a href="{% url 'delete_review' review.pk %}">Delete</a>
+    {% if review.is_editable %}
+    <a href="{% url 'edit_review' review.pk %}">Edit</a> |
+    <a href="{% url 'delete_review' review.pk %}">Delete</a>
     {% endif %}
 
     <!-- Flag option -->
