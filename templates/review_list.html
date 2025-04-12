@@ -1,5 +1,3 @@
-<!-- review_list.html -->
-
 <h2>All Reviews</h2>
 
 <!-- Filter Form -->
@@ -46,7 +44,6 @@
     <button type="submit">Filter</button>
 </form>
 
-
 {% if average_rating %}
     <p><strong>Average Service Quality Rating:</strong> {{ average_rating|floatformat:1 }}/5</p>
 {% endif %}
@@ -63,6 +60,8 @@
     </strong> 
     on {{ review.created_at|date:"Y-m-d H:i" }}</p>
     
+    <p><strong>Patient ID:</strong> {{ review.patient_id }}</p> <!-- ✅ Added Patient ID -->
+
     <p><strong>Hospital:</strong> {{ review.hospital.name }}</p>
     {% if review.doctor %}<p><strong>Doctor:</strong> {{ review.doctor.name }}</p>{% endif %}
 
