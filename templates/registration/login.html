@@ -5,4 +5,5 @@
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Login</button>
+    <li><a href="{% url 'medical_records:register' %}">Register</a></li>
 </form>

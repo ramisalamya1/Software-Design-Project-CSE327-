@@ -4,7 +4,7 @@ from .models import CustomUser, ProviderProfile, AdminActionLog
 
 # user logged in is an admin
 def is_admin(user):
-    return user.is_authenticated and user.role == 'admin'
+    return user.is_authenticated and user.role == 'admins'
 
 @login_required
 @user_passes_test(is_admin)
@@ -37,3 +37,9 @@ def suspend_user(request, user_id):
     user.save()
     AdminActionLog.objects.create(admin=request.user, action=f"Suspended user {user.username}")
     return redirect('user_list')
+
+@login_required
+@user_passes_test(is_admin)
+def user_list(request):
+    users = CustomUser.objects.all()
+    return render(request, 'user_list.html', {'users': users})

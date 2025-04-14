@@ -1,11 +1,6 @@
 <!-- templates/home.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Records</title>
-</head>
+{% extends "base.html" %}
+{% block body %}
 <body>
     <h1>Welcome to the Global Medical Records Section</h1>
     <ul>
@@ -15,4 +10,4 @@
         <li><a href="{% url 'medical_records:download_pdf' 1 %}">Download Record PDF</a></li>  <!-- Example link -->
     </ul>
 </body>
-</html>
+{% endblock %}

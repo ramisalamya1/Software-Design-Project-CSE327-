@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.forms import UserCreationForm
+from admin_management.forms import CustomUserCreationForm
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
@@ -14,6 +14,8 @@ from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import logout
 from django.shortcuts import redirect
+from admin_management.models import CustomUser
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -22,28 +24,29 @@ def login_view(request):
             user = form.get_user()
             login(request, user)
             # for admin roles
-            if user is not None and user.role == 'admin':
-                login(request, user)
+            # If user is admin, redirect to admin dashboard
+            if hasattr(user, 'role') and user.role == 'admins':
                 return redirect('admin_management:admin_dashboard')
 
             else:
-                # Redirect to the page the user was trying to access, or default to 'home'
-                next_page = request.GET.get('next', 'home')  
+                # Otherwise, redirect to the default or intended page
+                next_page = request.GET.get('next', 'medical_records:home')
                 return redirect(next_page)
     else:
         form = AuthenticationForm()
 
     # If the form is invalid, display an error message
     return render(request, 'registration/login.html', {'form': form})
+
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Your account has been created!')
-            return redirect('login')  # Redirect to login page after successful registration
+            return redirect('login')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
 
 def logout_view(request):

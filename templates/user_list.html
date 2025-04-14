@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block body %}
+<h2>User List</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+        <tr>
+            <td>{{ user.username }}</td>
+            <td>{{ user.role }}</td>
+            <td>{{ user.is_active|yesno:"Active,Suspended" }}</td>
+            <td>
+                {% if user.is_active %}
+                    <a href="{% url 'admin_management:suspend_user' user.id %}">Suspend</a>
+                {% else %}
+                    <em>Suspended</em>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
