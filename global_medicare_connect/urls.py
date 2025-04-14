@@ -28,5 +28,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('medical/', include('medical_records.urls')),
     path('', views.login_view, name='login'), 
+    path('logout/', views.logout_view, name='logout'),
     path('register/', views.register, name='register'), 
 ]
