@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Confirmation - Global Medicare Connect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen bg-gray-100 py-12">
+        <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                    <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800">Payment Successful!</h1>
+                <p class="text-gray-600 mt-2">Transaction ID: {{ payment.transaction_id }}</p>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="bg-gray-50 rounded-lg p-6 mb-8">
+                <h2 class="text-xl font-semibold mb-4">Payment Details</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-gray-600">Amount Paid:</p>
+                        <p class="font-bold text-xl">{{ payment.currency }} {{ payment.amount }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Payment Method:</p>
+                        <p class="font-medium">{{ payment.get_payment_method_display }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Date:</p>
+                        <p class="font-medium">{{ payment.created_at|date:"F j, Y" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Status:</p>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            {{ payment.status|title }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Package Details -->
+            <div class="bg-gray-50 rounded-lg p-6 mb-8">
+                <h2 class="text-xl font-semibold mb-4">Package Details</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-gray-600">Hospital:</p>
+                        <p class="font-medium">{{ payment.package.hospital.name }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Treatment:</p>
+                        <p class="font-medium">{{ payment.package.treatment_type }}</p>
+                    </div>
+                    {% if payment.is_installment %}
+                    <div>
+                        <p class="text-gray-600">Installment Plan:</p>
+                        <p class="font-medium">{{ payment.installment_count }} months</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-center space-x-4">
+                <a href="{% url 'package_customization:package_list' %}" class="inline-flex items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    View All Packages
+                </a>
+                <a href="{% url 'secure_payment:refund_request' payment.id %}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
+                    Request Refund
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

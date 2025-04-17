@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Refund - Global Medicare Connect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen bg-gray-100 py-12">
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
+            <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Request Refund</h1>
+
+            <!-- Payment Summary -->
+            <div class="mb-8 p-6 bg-gray-50 rounded-lg">
+                <h2 class="text-xl font-semibold mb-4">Payment Summary</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-gray-600">Amount:</p>
+                        <p class="font-bold text-xl">{{ payment.currency }} {{ payment.amount }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Transaction ID:</p>
+                        <p class="font-medium">{{ payment.transaction_id }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Payment Date:</p>
+                        <p class="font-medium">{{ payment.created_at|date:"F j, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Refund Form -->
+            <form method="POST" class="space-y-6">
+                {% csrf_token %}
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Reason for Refund
+                    </label>
+                    <textarea 
+                        name="reason" 
+                        required 
+                        rows="4" 
+                        class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+                        placeholder="Please explain why you're requesting a refund..."></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end space-x-4">
+                    <a href="{% url 'secure_payment:payment_confirmation' payment.id %}" class="px-6 py-3 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Cancel
+                    </a>
+                    <button type="submit" class="px-6 py-3 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                        Submit Refund Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

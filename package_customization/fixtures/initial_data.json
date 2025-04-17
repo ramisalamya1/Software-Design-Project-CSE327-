@@ -1,0 +1,147 @@
+[
+    {
+        "model": "package_customization.hospital",
+        "pk": 1,
+        "fields": {
+            "name": "Apollo Hospital",
+            "city": "Delhi",
+            "country": "India",
+            "treatment_type": "Cardiology",
+            "cost_estimate": 2500.00,
+            "accreditation": "JCI",
+            "accepts_insurance": true
+        }
+    },
+    {
+        "model": "package_customization.hospital",
+        "pk": 2,
+        "fields": {
+            "name": "Fortis Healthcare",
+            "city": "Mumbai",
+            "country": "India",
+            "treatment_type": "Orthopedics",
+            "cost_estimate": 3000.00,
+            "accreditation": "NABH",
+            "accepts_insurance": true
+        }
+    },
+    {
+        "model": "package_customization.hospital",
+        "pk": 3,
+        "fields": {
+            "name": "AIIMS",
+            "city": "Delhi",
+            "country": "India",
+            "treatment_type": "Neurology",
+            "cost_estimate": 1500.00,
+            "accreditation": "NABH",
+            "accepts_insurance": false
+        }
+    },
+    {
+        "model": "package_customization.accommodation",
+        "pk": 1,
+        "fields": {
+            "name": "Comfort Inn",
+            "type": "Hotel",
+            "distance_to_hospital": 2.5,
+            "cost_per_night": 3000.00,
+            "amenities": "WiFi, Breakfast, Room Service",
+            "available": true
+        }
+    },
+    {
+        "model": "package_customization.accommodation",
+        "pk": 2,
+        "fields": {
+            "name": "Healthcare Apartments",
+            "type": "Apartment",
+            "distance_to_hospital": 1.0,
+            "cost_per_night": 4500.00,
+            "amenities": "Kitchen, Laundry, Caretaker",
+            "available": true
+        }
+    },
+    {
+        "model": "package_customization.transport",
+        "pk": 1,
+        "fields": {
+            "type": "Ambulance",
+            "provider": "Quick Medical Transport",
+            "cost_per_km": 50.00,
+            "available": true
+        }
+    },
+    {
+        "model": "package_customization.transport",
+        "pk": 2,
+        "fields": {
+            "type": "Private Car",
+            "provider": "Comfort Rides",
+            "cost_per_km": 25.00,
+            "available": true
+        }
+    },
+    {
+        "model": "package_customization.travelassistance",
+        "pk": 1,
+        "fields": {
+            "service_type": "Visa Assistance",
+            "provider": "Global Medical Travel",
+            "cost": 5000.00,
+            "description": "Complete visa application assistance including documentation"
+        }
+    },
+    {
+        "model": "package_customization.travelassistance",
+        "pk": 2,
+        "fields": {
+            "service_type": "Language Translation",
+            "provider": "MediTranslate",
+            "cost": 2000.00,
+            "description": "Professional medical translation services"
+        }
+    },
+    {
+        "model": "package_customization.dietaryoption",
+        "pk": 1,
+        "fields": {
+            "name": "Vegetarian",
+            "description": "Fresh vegetarian meals prepared according to dietary requirements",
+            "cost_per_day": 800.00,
+            "available": true
+        }
+    },
+    {
+        "model": "package_customization.dietaryoption",
+        "pk": 2,
+        "fields": {
+            "name": "Diabetic-Friendly",
+            "description": "Low-glycemic meals suitable for diabetic patients",
+            "cost_per_day": 1000.00,
+            "available": true
+        }
+    },
+    {
+        "model": "package_customization.rehabilitationservice",
+        "pk": 1,
+        "fields": {
+            "name": "Physical Therapy",
+            "type": "Physiotherapy",
+            "provider": "HealthRecover",
+            "cost_per_session": 1500.00,
+            "duration": 60
+        }
+    },
+    {
+        "model": "package_customization.rehabilitationservice",
+        "pk": 2,
+        "fields": {
+            "name": "Yoga Therapy",
+            "type": "Yoga",
+            "provider": "MindBody Wellness",
+            "cost_per_session": 1000.00,
+            "duration": 45
+        }
+    }
+]
