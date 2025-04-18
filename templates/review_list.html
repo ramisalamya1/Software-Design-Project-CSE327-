@@ -1,90 +1,234 @@
-<h2>All Reviews</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Reviews</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 2rem;
+        }
+        .filter-form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .review-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s;
+        }
+        .review-card:hover {
+            transform: translateY(-5px);
+        }
+        .rating-badge {
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+        }
+        .rating-high {
+            background-color: #28a745;
+            color: white;
+        }
+        .rating-medium {
+            background-color: #ffc107;
+            color: black;
+        }
+        .rating-low {
+            background-color: #dc3545;
+            color: white;
+        }
+        .action-links a {
+            text-decoration: none;
+            margin-right: 1rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="text-center mb-4">Hospital Reviews</h1>
+            </div>
+        </div>
 
-<!-- Filter Form -->
-<form method="get">
-    <label for="hospital">Hospital:</label>
-    <select name="hospital" id="hospital">
-        <option value="">All Hospitals</option>
-        {% for hospital in hospitals %}
-            <option value="{{ hospital.id }}" {% if hospital.id|stringformat:"s" == request.GET.hospital %}selected{% endif %}>
-                {{ hospital.name }}
-            </option>
-        {% endfor %}
-    </select>
+        <!-- Filter Form -->
+        <div class="filter-form mb-4">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label for="hospital" class="form-label">Hospital</label>
+                    <select name="hospital" id="hospital" class="form-select">
+                        <option value="">All Hospitals</option>
+                        {% for hospital in hospitals %}
+                            <option value="{{ hospital.id }}" {% if hospital.id|stringformat:"s" == request.GET.hospital %}selected{% endif %}>
+                                {{ hospital.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-    <label for="doctor">Doctor:</label>
-    <select name="doctor" id="doctor">
-        <option value="">All Doctors</option>
-        {% for doctor in doctors %}
-            <option value="{{ doctor.id }}" {% if doctor.id|stringformat:"s" == request.GET.doctor %}selected{% endif %}>
-                {{ doctor.name }}
-            </option>
-        {% endfor %}
-    </select>
+                <div class="col-md-3">
+                    <label for="doctor" class="form-label">Doctor</label>
+                    <select name="doctor" id="doctor" class="form-select">
+                        <option value="">All Doctors</option>
+                        {% for doctor in doctors %}
+                            <option value="{{ doctor.id }}" {% if doctor.id|stringformat:"s" == request.GET.doctor %}selected{% endif %}>
+                                {{ doctor.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-    <label for="service_quality">Service Quality:</label>
-    <select name="service_quality" id="service_quality">
-        <option value="">All Ratings</option>
-        {% with "12345"|make_list as ratings %}
-            {% for i in ratings %}
-                <option value="{{ i }}" {% if i == request.GET.service_quality %}selected{% endif %}>
-                    {{ i }}
-                </option>
+                <div class="col-md-2">
+                    <label for="service_quality" class="form-label">Rating</label>
+                    <select name="service_quality" id="service_quality" class="form-select">
+                        <option value="">All Ratings</option>
+                        {% with "12345"|make_list as ratings %}
+                            {% for i in ratings %}
+                                <option value="{{ i }}" {% if i == request.GET.service_quality %}selected{% endif %}>
+                                    {{ i }} Star{% if i != "1" %}s{% endif %}
+                                </option>
+                            {% endfor %}
+                        {% endwith %}
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label for="anonymous" class="form-label">Anonymity</label>
+                    <select name="anonymous" id="anonymous" class="form-select">
+                        <option value="">All</option>
+                        <option value="1" {% if request.GET.anonymous == '1' %}selected{% endif %}>Anonymous</option>
+                        <option value="0" {% if request.GET.anonymous == '0' %}selected{% endif %}>Named</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-filter me-2"></i>Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Reviews List -->
+        <div class="reviews-container">
+            {% for review in reviews %}
+            <div class="review-card p-4">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="d-flex align-items-center mb-3">
+                            <h5 class="mb-0 me-3">
+                                {% if review.anonymous %}
+                                    <i class="fas fa-user-secret me-2"></i>Anonymous
+                                {% else %}
+                                    <i class="fas fa-user me-2"></i>{{ review.user.username }}
+                                {% endif %}
+                            </h5>
+                            <small class="text-muted">
+                                <i class="far fa-clock me-1"></i>{{ review.created_at|date:"Y-m-d H:i" }}
+                            </small>
+                        </div>
+                        
+                        <p class="mb-2"><strong>Patient ID:</strong> {{ review.patient_id }}</p>
+                        <p class="mb-2"><strong>Hospital:</strong> {{ review.hospital.name }}</p>
+                        {% if review.doctor %}
+                            <p class="mb-2"><strong>Doctor:</strong> {{ review.doctor.name }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="ratings text-end">
+                            <span class="badge rating-badge {% if review.service_quality >= 4 %}rating-high{% elif review.service_quality >= 3 %}rating-medium{% else %}rating-low{% endif %}">
+                                <i class="fas fa-star me-1"></i>{{ review.service_quality }}/5
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <small class="text-muted">Service Quality</small>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: calc({{ review.service_quality }} * 20%)" 
+                                 aria-valuenow="{{ review.service_quality }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="5">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted">Cost Transparency</small>
+                        <div class="progress">
+                            <div class="progress-bar bg-info" role="progressbar" 
+                                 style="width: calc({{ review.cost_transparency }} * 20%)" 
+                                 aria-valuenow="{{ review.cost_transparency }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="5">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted">Facility Standards</small>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" role="progressbar" 
+                                 style="width: calc({{ review.facility_standards }} * 20%)" 
+                                 aria-valuenow="{{ review.facility_standards }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="5">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted">Treatment Effectiveness</small>
+                        <div class="progress">
+                            <div class="progress-bar bg-warning" role="progressbar" 
+                                 style="width: calc({{ review.treatment_effectiveness }} * 20%)" 
+                                 aria-valuenow="{{ review.treatment_effectiveness }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="5">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="review-text mb-3">{{ review.text }}</p>
+
+                <div class="action-links">
+                    {% if review.can_edit %}
+                        <a href="{% url 'edit_review' review.pk %}" class="text-primary">
+                            <i class="fas fa-edit me-1"></i>Edit
+                        </a>
+                        <a href="{% url 'delete_review' review.pk %}" class="text-danger" 
+                           onclick="return confirm('Are you sure you want to delete this review?')">
+                            <i class="fas fa-trash-alt me-1"></i>Delete
+                        </a>
+                    {% endif %}
+                    
+                    {% if not review.already_flagged %}
+                        <a href="{% url 'flag_review' review.pk %}" class="text-warning">
+                            <i class="fas fa-flag me-1"></i>Flag
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle me-2"></i>No reviews yet.
+            </div>
             {% endfor %}
-        {% endwith %}
-    </select>
+        </div>
+    </div>
 
-    <label for="anonymous">Anonymity:</label>
-    <select name="anonymous" id="anonymous">
-        <option value="">All</option>
-        <option value="1" {% if request.GET.anonymous == '1' %}selected{% endif %}>Anonymous</option>
-        <option value="0" {% if request.GET.anonymous == '0' %}selected{% endif %}>Not Anonymous</option>
-    </select>
-
-    <button type="submit">Filter</button>
-</form>
-
-{% if average_rating %}
-    <p><strong>Average Service Quality Rating:</strong> {{ average_rating|floatformat:1 }}/5</p>
-{% endif %}
-
-<!-- Reviews List -->
-{% for review in reviews %}
-  <div style="border: 1px solid #ccc; padding: 10px; margin: 15px 0;">
-    <p><strong>
-      {% if review.anonymous %}
-        Anonymous
-      {% else %}
-        {{ review.user.username }}
-      {% endif %}
-    </strong> 
-    on {{ review.created_at|date:"Y-m-d H:i" }}</p>
-    
-    <p><strong>Patient ID:</strong> {{ review.patient_id }}</p> <!-- ✅ Added Patient ID -->
-
-    <p><strong>Hospital:</strong> {{ review.hospital.name }}</p>
-    {% if review.doctor %}<p><strong>Doctor:</strong> {{ review.doctor.name }}</p>{% endif %}
-
-    <p><strong>Service Quality:</strong> {{ review.service_quality }}/5</p>
-    <p><strong>Cost Transparency:</strong> {{ review.cost_transparency }}/5</p>
-    <p><strong>Facility Standards:</strong> {{ review.facility_standards }}/5</p>
-    <p><strong>Treatment Effectiveness:</strong> {{ review.treatment_effectiveness }}/5</p>
-
-    <p><strong>Average Rating:</strong> {{ review.average_rating|floatformat:1 }}/5</p>
-
-    <p><strong>Review:</strong> {{ review.text }}</p>
-
-    {% if review.can_edit %}
-    <a href="{% url 'edit_review' review.pk %}">Edit</a> |
-    <a href="{% url 'delete_review' review.pk %}">Delete</a>
-    {% endif %}
-
-
-    <!-- Flag option -->
-    {% if not review.already_flagged %}
-    <a href="{% url 'flag_review' review.pk %}">Flag this review</a>
-    {% endif %}
-  </div>
-{% empty %}
-  <p>No reviews yet.</p>
-{% endfor %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
