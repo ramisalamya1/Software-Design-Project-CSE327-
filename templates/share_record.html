@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Share Medical Record</title>
+</head>
+<body>
+    <h1>Share Medical Record</h1>
+
+    <p><strong>Title:</strong> {{ record.title }}</p>
+    <p><strong>Description:</strong> {{ record.description }}</p>
+    <p><strong>Type:</strong> {{ record.record_type }}</p>
+    <p><strong>Category:</strong> {{ record.category.name }}</p>
+
+    <p><strong>Secure Share Link:</strong></p>
+    <input type="text" value="{{ share_link }}" readonly style="width: 100%;"><br><br>
+
+    <a href="{{ share_link }}" target="_blank">Open Shared Record</a>
+</body>
+</html>
