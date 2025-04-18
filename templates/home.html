@@ -64,12 +64,12 @@
             background-color: #2980b9;
         }
 
-        .auth-buttons {
+        .auth-section {
             text-align: center;
-            margin-bottom: 20px;
+            margin-top: 30px;
         }
 
-        .auth-buttons a {
+        .auth-section a {
             display: inline-block;
             margin: 0 10px;
             padding: 8px 16px;
@@ -79,12 +79,18 @@
             border-radius: 5px;
         }
 
-        .auth-buttons a.logout {
+        .auth-section a.logout {
             background-color: #e74c3c;
         }
 
-        .auth-buttons a:hover {
+        .auth-section a:hover {
             opacity: 0.9;
+        }
+
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -95,15 +101,9 @@
             <p class="subtitle">Securely manage, view, and share your health records anytime, anywhere.</p>
         </header>
 
-        <div class="auth-buttons">
-            {% if user.is_authenticated %}
-                <span>Hello, {{ user.username }}!</span>
-                <a href="{% url 'medical_records:logout' %}" class="logout">Logout</a>
-            {% else %}
-                <a href="{% url 'medical_records:login' %}">Login</a>
-                <a href="{% url 'medical_records:register' %}">Register</a>
-            {% endif %}
-        </div>
+        {% if user.is_authenticated %}
+            <p class="welcome-text">Hello, {{ user.username }}!</p>
+        {% endif %}
 
         <nav class="nav-menu">
             <ul>
@@ -113,6 +113,15 @@
                 <li><a href="{% url 'medical_records:download_pdf' 1 %}">📄 Download Record PDF</a></li>
             </ul>
         </nav>
+
+        <div class="auth-section">
+            {% if user.is_authenticated %}
+                <a href="{% url 'medical_records:logout' %}" class="logout">Logout</a>
+            {% else %}
+                <a href="{% url 'medical_records:login' %}">Login</a>
+                <a href="{% url 'medical_records:register' %}">Register</a>
+            {% endif %}
+        </div>
     </div>
 </body>
 </html>
