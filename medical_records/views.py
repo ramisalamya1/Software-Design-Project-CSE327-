@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.core.files.storage import FileSystemStorage
 from .models import MedicalRecord, Category, Reminder
 from django.utils import timezone
@@ -78,6 +78,7 @@ def upload_record(request):
             
     categories = Category.objects.all()
     return render(request, 'upload_record.html', {'categories': categories})
+
 @login_required
 def view_records(request):
     if not request.user.is_authenticated:
@@ -88,14 +89,25 @@ def view_records(request):
 
 @login_required
 def share_record(request, record_id):
-    record = get_object_or_404(MedicalRecord, id=record_id)
+    record = get_object_or_404(MedicalRecord, id=record_id, user=request.user)
 
-    # Generate a temporary link (UUID)
-    share_link = uuid.uuid4().hex
-    # Store this link in a model, if required, to track sharing
-    # For simplicity, let's directly use it for this example
+    # Generate a share token only if it doesn't already exist
+    if not record.share_token:
+        record.share_token = uuid.uuid4().hex
+        record.save()
 
+    share_link = request.build_absolute_uri(
+        f"/medical/shared/{record.share_token}/"
+    )
     return render(request, 'share_record.html', {'record': record, 'share_link': share_link})
+
+def view_shared_record(request, token):
+    try:
+        record = MedicalRecord.objects.get(share_token=token)
+    except MedicalRecord.DoesNotExist:
+        raise Http404("Record not found or invalid token")
+
+    return render(request, 'view_shared_record.html', {'record': record})
 
 @login_required
 def download_pdf(request, record_id):

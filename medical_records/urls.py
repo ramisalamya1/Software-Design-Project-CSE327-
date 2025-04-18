@@ -16,5 +16,6 @@ urlpatterns = [
     path('upload/', views.upload_record, name='upload_record'),
     path('view/', views.view_records, name='view_records'),
     path('share/<int:record_id>/', views.share_record, name='share_record'),
+    path('shared/<str:token>/', views.view_shared_record, name='view_shared_record'),  
     path('download_pdf/<int:record_id>/', views.download_pdf, name='download_pdf'),
 ]
