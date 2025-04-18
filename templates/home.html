@@ -70,6 +70,7 @@
             border: none;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
             height: 100%;
+            text-align: center;
         }
 
         .feature-card:hover {
@@ -120,8 +121,18 @@
         }
 
         .auth-section span {
+            font-size: 1rem;
             color: var(--dark-accent);
             margin-right: 1rem;
+        }
+
+        .auth-section span strong {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            display: inline-block;
+            margin-left: 4px;
+            text-transform: uppercase;
         }
 
         .auth-section a.login {
@@ -151,6 +162,29 @@
             font-weight: 300;
             margin-top: 1rem;
         }
+
+        .action-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .feature-card p {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -164,7 +198,7 @@
                 </div>
                 <div class="auth-section">
                     {% if user.is_authenticated %}
-                        <span>Welcome, {{ user.username }}</span>
+                        <span>Welcome, <strong>{{ user.username }}</strong></span>
                         <a href="{% url 'medical_records:logout' %}" class="login">Logout</a>
                     {% else %}
                         <a href="{% url 'medical_records:login' %}" class="login">Login</a>
@@ -173,7 +207,7 @@
                 </div>
             </div>
         </nav>
-        
+
         <section class="hero-section">
             <div class="container">
                 <h1>Welcome to Global Medicare Connect</h1>
@@ -183,26 +217,21 @@
 
         <section class="features">
             <div class="container">
-                <div class="row">
+                <div class="row justify-content-center">
                     <div class="col-md-4 mb-4">
                         <div class="feature-card">
-                            <i class="fas fa-file-medical feature-icon"></i>
-                            <h3>Medical Records</h3>
-                            <p>Securely store and access your medical records anytime, anywhere.</p>
+                            <i class="fas fa-upload feature-icon"></i>
+                            <h3>Upload Records</h3>
+                            <p>Securely upload and store your medical documents.</p>
+                            <a href="{% url 'medical_records:upload_record' %}" class="action-button">Upload Now</a>
                         </div>
                     </div>
                     <div class="col-md-4 mb-4">
                         <div class="feature-card">
-                            <i class="fas fa-hospital feature-icon"></i>
-                            <h3>Hospital Network</h3>
-                            <p>Connect with healthcare providers worldwide.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="feature-card">
-                            <i class="fas fa-user-md feature-icon"></i>
-                            <h3>Expert Care</h3>
-                            <p>Access to international medical expertise and second opinions.</p>
+                            <i class="fas fa-folder-open feature-icon"></i>
+                            <h3>View Records</h3>
+                            <p>Access and manage your stored medical records.</p>
+                            <a href="{% url 'medical_records:view_records' %}" class="action-button">View Records</a>
                         </div>
                     </div>
                 </div>
