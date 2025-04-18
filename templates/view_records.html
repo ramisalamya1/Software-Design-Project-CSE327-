@@ -3,17 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <title>Your Medical Records</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f8;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .record-card {
+            border: 1px solid #dfe6e9;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #fdfefe;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .record-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .record-title {
+            font-size: 1.5rem;
+            color: #34495e;
+            margin-bottom: 10px;
+        }
+
+        .record-info {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        .button-group a {
+            display: inline-block;
+            margin-right: 15px;
+            padding: 10px 20px;
+            text-decoration: none;
+            background-color: #3498db;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-group a:hover {
+            background-color: #2980b9;
+        }
+
+        .no-records {
+            text-align: center;
+            color: #bdc3c7;
+            font-size: 1.2rem;
+            margin-top: 40px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Your Medical Records</h1>
-    {% for record in records %}
-        <div>
-            <h2>{{ record.title }}</h2>
-            <p>{{ record.record_type }}</p>
-            <p>{{ record.date_created }}</p>
-            <a href="{% url 'medical_records:download_record' record.id %}">Download Original File</a>
-            <a href="{% url 'medical_records:share_record' record.id %}">Share</a>
-        </div>
-    {% endfor %}
+    <div class="container">
+        <h1>Your Medical Records</h1>
+
+        {% if records %}
+            {% for record in records %}
+                <div class="record-card">
+                    <div class="record-title">{{ record.title }}</div>
+                    <div class="record-info">Type: {{ record.record_type }}</div>
+                    <div class="record-info">Uploaded: {{ record.date_created }}</div>
+                    <div class="button-group">
+                        <a href="{% url 'medical_records:download_record' record.id %}">📥 Download</a>
+                        <a href="{% url 'medical_records:share_record' record.id %}">🔗 Share</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-records">No medical records found.</div>
+        {% endif %}
+    </div>
 </body>
 </html>

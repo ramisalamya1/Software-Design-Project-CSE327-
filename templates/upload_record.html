@@ -2,40 +2,285 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Medical Record</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --secondary-color: #2ecc71;
+            --text-color: #2c3e50;
+            --border-color: #ddd;
+            --background-color: #f4f6f8;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px var(--shadow-color);
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: var(--text-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 1.1rem;
+        }
+
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: #fff;
+        }
+
+        input[type="text"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .file-upload {
+            border: 2px dashed var(--border-color);
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
+            cursor: pointer;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary-color);
+            background-color: #f0f7ff;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-label {
+            display: block;
+            cursor: pointer;
+            padding: 15px;
+        }
+
+        .file-upload-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .file-info {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232c3e50' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 15px;
+            padding-right: 45px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            button {
+                padding: 12px 20px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+    </style>
 </head>
 <body>
-    <h1>Upload a Medical Record</h1>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        
-        <label for="title">Title:</label>
-        <input type="text" name="title" required><br><br>
+    <div class="container">
+        <h1>📋 Upload Medical Record</h1>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" name="title" id="title" required 
+                       placeholder="Enter the title of your medical record">
+            </div>
 
-        <label for="record_type">Record Type:</label>
-        <select name="record_type" required>
-            <option value="prescription">Prescription</option>
-            <option value="blood_test">Blood Test</option>
-            <option value="diagnostic_report">Diagnostic Report</option>
-            <option value="doctor_note">Doctor's Note</option>
-            <option value="surgery_summary">Surgery Summary</option>
-        </select><br><br>
+            <div class="form-group">
+                <label for="record_type">Record Type</label>
+                <select name="record_type" id="record_type" required>
+                    <option value="" disabled selected>Choose the type of record</option>
+                    <option value="prescription">Prescription</option>
+                    <option value="blood_test">Blood Test</option>
+                    <option value="diagnostic_report">Diagnostic Report</option>
+                    <option value="doctor_note">Doctor's Note</option>
+                    <option value="surgery_summary">Surgery Summary</option>
+                </select>
+            </div>
 
-        <label for="category">Category:</label>
-        <select name="category" required>
-            <option value="" disabled selected>Select Category</option>  <!-- Default option -->
-            {% for category in categories %}
-                <option value="{{ category.id }}">{{ category.name }}</option>
-            {% endfor %}
-        </select><br><br>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select name="category" id="category" required>
+                    <option value="" disabled selected>Select a category</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-        <label for="description">Description:</label><br>
-        <textarea name="description" required></textarea><br><br>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea name="description" id="description" required 
+                          placeholder="Provide a detailed description of the medical record"></textarea>
+            </div>
 
-        <label for="record_file">Upload Record File:</label>
-        <input type="file" name="record_file" required><br><br>
+            <div class="form-group">
+                <label for="record_file">Record File</label>
+                <div class="file-upload">
+                    <label for="record_file" class="file-upload-label">
+                        <div class="file-upload-icon">📄</div>
+                        <span>Click to upload or drag and drop your file here</span>
+                        <input type="file" name="record_file" id="record_file" required>
+                        <div class="file-info">
+                            Supported formats: PDF, JPG, PNG (Max size: 10MB)
+                        </div>
+                    </label>
+                </div>
+            </div>
 
-        <button type="submit">Upload</button>
-    </form>
+            <button type="submit">Upload Record</button>
+        </form>
+    </div>
+
+    <script>
+        // Add file name display when file is selected
+        document.getElementById('record_file').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            if (fileName) {
+                const fileInfo = this.parentElement.querySelector('.file-info');
+                fileInfo.textContent = `Selected file: ${fileName}`;
+            }
+        });
+    </script>
 </body>
 </html>
