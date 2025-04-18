@@ -1,47 +1,39 @@
-# reviews/views.py
-
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Review, Hospital, Doctor, ReviewFlag
 from .forms import ReviewForm, ReviewFlagForm
 from django.utils import timezone
 from django.db.models import Avg
 
-
 def add_review(request):
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
-            # Automatically assign the current user to the review, even if they are anonymous
             review = form.save(commit=False)
-            review.user = None  # Since there is no authentication, assign None
+            review.user = None
             review.save()
-            return redirect('view_reviews')  # Redirect to view reviews after saving
+            return redirect('view_reviews')
     else:
         form = ReviewForm()
     
     return render(request, 'review_form.html', {'form': form})
 
-
 def edit_review(request, pk):
     review = get_object_or_404(Review, pk=pk)
-
-    if not getattr(review, 'is_editable', True):
-        return render(request, 'edit_denied.html')
-
-    form = ReviewForm(request.POST or None, instance=review)
-    if form.is_valid():
-        form.save()
-        return redirect('view_reviews')
+    
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            return redirect('view_reviews')
+    else:
+        form = ReviewForm(instance=review)
 
     return render(request, 'review_form.html', {'form': form, 'edit': True})
 
-
 def delete_review(request, pk):
     review = get_object_or_404(Review, pk=pk)
-    if getattr(review, 'is_editable', True):
-        review.delete()
+    review.delete()
     return redirect('view_reviews')
-
 
 def view_reviews(request):
     reviews = Review.objects.all().prefetch_related('flags')
@@ -67,11 +59,12 @@ def view_reviews(request):
     elif anonymous_filter == '0':
         reviews = reviews.filter(anonymous=False)
 
+    reviews = list(reviews)
     for review in reviews:
-        review.can_edit = True  
+        review.is_editable = True
         review.already_flagged = False
 
-    average_rating = reviews.aggregate(Avg('service_quality'))['service_quality__avg']
+    average_rating = Review.objects.aggregate(Avg('service_quality'))['service_quality__avg']
 
     return render(request, 'review_list.html', {
         'reviews': reviews,
@@ -80,15 +73,18 @@ def view_reviews(request):
         'doctors': doctors,
     })
 
-
 def flag_review(request, pk):
     review = get_object_or_404(Review, pk=pk)
 
-    form = ReviewFlagForm(request.POST or None)
-    if form.is_valid():
-        flag = form.save(commit=False)
-        flag.reported_by = None  
-        flag.review = review
-        flag.save()
-        return redirect('view_reviews')
+    if request.method == 'POST':
+        form = ReviewFlagForm(request.POST)
+        if form.is_valid():
+            flag = form.save(commit=False)
+            flag.reported_by = None
+            flag.review = review
+            flag.save()
+            return redirect('view_reviews')
+    else:
+        form = ReviewFlagForm()
+    
     return render(request, 'flag_review.html', {'form': form})
