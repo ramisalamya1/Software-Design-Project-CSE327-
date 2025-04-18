@@ -27,6 +27,7 @@ class MedicalRecord(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     date_created = models.DateTimeField(default=timezone.now)
     version_history = models.JSONField(default=list)  # To track version history
+    share_token = models.CharField(max_length=64, blank=True, null=True)  
 
     def __str__(self):
         return self.title
