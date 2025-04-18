@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Records</title>
+    <title>Global Medicare Connect</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -63,6 +63,29 @@
         .nav-menu a:hover {
             background-color: #2980b9;
         }
+
+        .auth-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .auth-buttons a {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 8px 16px;
+            background-color: #2ecc71;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .auth-buttons a.logout {
+            background-color: #e74c3c;
+        }
+
+        .auth-buttons a:hover {
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body>
@@ -72,12 +95,23 @@
             <p class="subtitle">Securely manage, view, and share your health records anytime, anywhere.</p>
         </header>
 
+        <div class="auth-buttons">
+            {% if user.is_authenticated %}
+                <span>Hello, {{ user.username }}!</span>
+                <a href="{% url 'medical_records:logout' %}" class="logout">Logout</a>
+            {% else %}
+                <a href="{% url 'medical_records:login' %}">Login</a>
+                <a href="{% url 'medical_records:register' %}">Register</a>
+            {% endif %}
+        </div>
+
         <nav class="nav-menu">
             <ul>
                 <li><a href="{% url 'medical_records:upload_record' %}">📤 Upload Medical Record</a></li>
                 <li><a href="{% url 'medical_records:view_records' %}">📁 View Medical Records</a></li>
-                <li><a href="{% url 'medical_records:share_record' 1 %}">🔗 Share Record</a></li>
-                <li><a href="{% url 'medical_records:download_pdf' 1 %}">📄 Download Record PDF</a></li>
+                <!-- Optional links for testing -->
+                <!-- <li><a href="{% url 'medical_records:share_record' 1 %}">🔗 Share Record</a></li>
+                <li><a href="{% url 'medical_records:download_pdf' 1 %}">📄 Download Record PDF</a></li> -->
             </ul>
         </nav>
     </div>
