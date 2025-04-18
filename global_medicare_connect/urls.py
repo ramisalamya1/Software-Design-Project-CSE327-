@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from booking.views import *
 from medical_records import views
+from django.conf.urls.static import static 
+
 
 urlpatterns = [
     path('', home, name="home"),
