@@ -11,7 +11,7 @@
             <h2>{{ record.title }}</h2>
             <p>{{ record.record_type }}</p>
             <p>{{ record.date_created }}</p>
-            <a href="{% url 'medical_records:download_pdf' record.id %}">Download as PDF</a>
+            <a href="{% url 'medical_records:download_record' record.id %}">Download Original File</a>
             <a href="{% url 'medical_records:share_record' record.id %}">Share</a>
         </div>
     {% endfor %}

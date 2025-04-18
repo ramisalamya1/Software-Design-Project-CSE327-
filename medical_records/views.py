@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse , FileResponse
 from django.core.files.storage import FileSystemStorage
 from .models import MedicalRecord, Category, Reminder
 from django.utils import timezone
@@ -14,6 +14,7 @@ from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import logout
 from django.shortcuts import redirect
+import os
 
 def login_view(request):
     if request.method == 'POST':
@@ -113,15 +114,11 @@ def view_shared_record(request, token):
 def download_pdf(request, record_id):
     record = get_object_or_404(MedicalRecord, id=record_id)
 
-    # Generate PDF of the medical record
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
-    pdf.cell(200, 10, txt=f"Medical Record: {record.title}", ln=True, align='C')
-    pdf.multi_cell(0, 10, txt=record.description)
-    pdf_output = pdf.output(dest='S').encode('latin1')
+    record = get_object_or_404(MedicalRecord, id=record_id)
 
-    response = HttpResponse(pdf_output, content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{record.title}.pdf"'
-    return response
+    file_path = record.record_file.path  # Full path to the file
+    file_name = os.path.basename(file_path)
+
+    return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
+
 
