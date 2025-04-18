@@ -13,8 +13,17 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import logout
-from django.shortcuts import redirect
 import os
+
+
+def home(request):
+    if request.user.is_authenticated:
+        records = MedicalRecord.objects.filter(user=request.user)
+    else:
+        records = None
+
+    return render(request, 'home.html', {'records': records})
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -121,4 +130,24 @@ def download_pdf(request, record_id):
 
     return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
 
+def medical_home(request):
+    records = MedicalRecord.objects.filter(user=request.user)
+    return render(request, 'home.html', {'records': records})
 
+@login_required
+
+def download_record(request, record_id):
+    record = get_object_or_404(MedicalRecord, id=record_id)
+    
+    # Make sure to use the correct field name (e.g., record_file)
+    file_path = os.path.join(settings.MEDIA_ROOT, record.record_file.name)
+
+    # Check if the file exists before serving it
+    if os.path.exists(file_path):
+        # Return the file as a response with content-disposition to download it
+        response = FileResponse(open(file_path, 'rb'), content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="{record.title}.pdf"'
+        return response
+    else:
+        # Handle the case where the file is not found
+        return HttpResponse("File not found", status=404)
