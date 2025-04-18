@@ -28,7 +28,6 @@ urlpatterns = [
     path('medical/', include('medical_records.urls')),
     path('login/', views.login_view, name='login'), 
     path('register/', views.register, name='register'), 
-
 ]
 
 if settings.DEBUG:

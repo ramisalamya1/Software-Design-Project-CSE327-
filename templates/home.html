@@ -4,122 +4,212 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global Medicare Connect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #FF6B6B;
+            --secondary-color: #4ECDC4;
+            --accent-color: #45B7D1;
+            --dark-accent: #2C3E50;
+            --background-color: #F7F9FC;
+            --text-color: #2D3436;
+            --border-color: #E8ECF3;
+            --success-color: #96CEB4;
+            --warning-color: #FFEAA7;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f4f6f8;
-            color: #333;
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
         }
 
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 30px;
-            background: #ffffff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            border-radius: 10px;
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
+        .hero-section {
+            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            color: white;
+            border-radius: 1.5rem;
+            padding: 4rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.2);
+            position: relative;
+            overflow: hidden;
         }
 
-        header h1 {
-            color: #2c3e50;
-            font-size: 2rem;
-            margin-bottom: 10px;
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%);
+            background-size: 3em 3em;
+            transform: rotate(15deg);
         }
 
-        .subtitle {
-            color: #7f8c8d;
-            font-size: 1rem;
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .nav-menu ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .feature-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: none;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            height: 100%;
         }
 
-        .nav-menu li {
-            margin: 15px 0;
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(78, 205, 196, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: transparent;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
         }
 
         .nav-menu a {
+            color: var(--dark-accent);
+            font-weight: 500;
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+            background: transparent;
             text-decoration: none;
-            padding: 12px 20px;
-            background-color: #3498db;
-            color: #fff;
-            border-radius: 6px;
             display: inline-block;
-            width: 100%;
-            text-align: center;
-            transition: background-color 0.3s ease;
+            margin: 0 0.5rem;
         }
 
         .nav-menu a:hover {
-            background-color: #2980b9;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            transform: translateY(-2px);
         }
 
         .auth-section {
-            text-align: center;
-            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
-        .auth-section a {
-            display: inline-block;
-            margin: 0 10px;
-            padding: 8px 16px;
-            background-color: #2ecc71;
+        .auth-section span {
+            color: var(--dark-accent);
+            margin-right: 1rem;
+        }
+
+        .auth-section a.login {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
             color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
             text-decoration: none;
-            border-radius: 5px;
         }
 
-        .auth-section a.logout {
-            background-color: #e74c3c;
+        .auth-section a.register {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-decoration: none;
         }
 
-        .auth-section a:hover {
-            opacity: 0.9;
-        }
-
-        .welcome-text {
-            text-align: center;
-            margin-bottom: 10px;
-            font-weight: bold;
+        .lead {
+            font-size: 1.25rem;
+            font-weight: 300;
+            margin-top: 1rem;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🌍 Global Medical Records</h1>
-            <p class="subtitle">Securely manage, view, and share your health records anytime, anywhere.</p>
-        </header>
-
-        {% if user.is_authenticated %}
-            <p class="welcome-text">Hello, {{ user.username }}!</p>
-        {% endif %}
-
+    <div class="main-container">
         <nav class="nav-menu">
-            <ul>
-                <li><a href="{% url 'medical_records:upload_record' %}">📤 Upload Medical Record</a></li>
-                <li><a href="{% url 'medical_records:view_records' %}">📁 View Medical Records</a></li>
-            </ul>
+            <div class="container d-flex justify-content-between align-items-center">
+                <div>
+                    <a href="{% url 'home' %}">Home</a>
+                    <a href="{% url 'medical_records:upload_record' %}">Upload Records</a>
+                    <a href="{% url 'medical_records:view_records' %}">View Records</a>
+                </div>
+                <div class="auth-section">
+                    {% if user.is_authenticated %}
+                        <span>Welcome, {{ user.username }}</span>
+                        <a href="{% url 'medical_records:logout' %}" class="login">Logout</a>
+                    {% else %}
+                        <a href="{% url 'medical_records:login' %}" class="login">Login</a>
+                        <a href="{% url 'medical_records:register' %}" class="register">Register</a>
+                    {% endif %}
+                </div>
+            </div>
         </nav>
+        
+        <section class="hero-section">
+            <div class="container">
+                <h1>Welcome to Global Medicare Connect</h1>
+                <p class="lead">Your trusted platform for managing medical records across borders</p>
+            </div>
+        </section>
 
-        <div class="auth-section">
-            {% if user.is_authenticated %}
-                <a href="{% url 'medical_records:logout' %}" class="logout">Logout</a>
-            {% else %}
-                <a href="{% url 'medical_records:login' %}">Login</a>
-                <a href="{% url 'medical_records:register' %}">Register</a>
-            {% endif %}
-        </div>
+        <section class="features">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-card">
+                            <i class="fas fa-file-medical feature-icon"></i>
+                            <h3>Medical Records</h3>
+                            <p>Securely store and access your medical records anytime, anywhere.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-card">
+                            <i class="fas fa-hospital feature-icon"></i>
+                            <h3>Hospital Network</h3>
+                            <p>Connect with healthcare providers worldwide.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-card">
+                            <i class="fas fa-user-md feature-icon"></i>
+                            <h3>Expert Care</h3>
+                            <p>Access to international medical expertise and second opinions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
