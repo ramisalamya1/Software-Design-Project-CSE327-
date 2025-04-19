@@ -1,3 +1,8 @@
 from django.contrib import admin
+from .models import HospitalStats, ComparisonRecord
 
-# Register your models here.
+admin.site.register(HospitalStats)
+admin.site.register(ComparisonRecord)
+
+
+
