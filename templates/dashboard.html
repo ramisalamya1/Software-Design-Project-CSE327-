@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block body %}
+<body>
+    <h1>Welcome, {{ request.user.username }}</h1>
+    <p>Your role: {{ request.user.role }}</p>
+
+    <ul>
+        <a href="{% url 'admin_management:pending_providers' %}">View & Approve Pending Providers</a>
+        <a href="{% url 'admin_management:user_list' %}">View all users</a>
+    </ul>
+</body>
+{% endblock body %}

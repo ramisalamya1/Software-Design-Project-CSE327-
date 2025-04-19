@@ -4,7 +4,6 @@
         body {
             font-family: 'Segoe UI', sans-serif;
             background-color: #f5f6fa;
-            padding: 20px;
         }
 
         h1 {
@@ -117,7 +116,7 @@
                         <span class="badge bg-danger">No</span>
                     {% endif %}
                 </p>
-                <form action="{% url 'book_appointment' hospital.id %}" method="get">
+                <form action="{% url 'booking:book_appointment' hospital.id %}" method="get">
                     <button type="submit" class="btn btn-success">Select Hospital</button>
                 </form>
             </div>

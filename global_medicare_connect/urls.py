@@ -29,9 +29,10 @@ urlpatterns = [
     path('search/', include('hospital_search.urls')),
     path('booking/', include('booking.urls')),
     path('package/', include('package_customization.urls', namespace='package_customization')),  
+    path('admin_management/', include('admin_management.urls')),
     path('admin/', admin.site.urls),
     path('medical/', include('medical_records.urls')),
-    path('login/', views.login_view, name='login'), 
+    path('', views.login_view, name='login'), 
+    path('logout/', views.logout_view, name='logout'),
     path('register/', views.register, name='register'), 
-
 ]

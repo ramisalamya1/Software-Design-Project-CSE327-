@@ -9,7 +9,7 @@
         "treatment_type": "Surgery",
         "accreditation": "NABH",
         "cost_estimate": 1500,
-        "accepts_insurance": "Yes"
+        "accepts_insurance": true
       }
     },
     {
@@ -22,7 +22,7 @@
         "treatment_type": "Cardiology",
         "accreditation": "JCI",
         "cost_estimate": 2500,
-        "accepts_insurance": "Yes"
+        "accepts_insurance": true
       }
     },
     {
@@ -35,7 +35,7 @@
         "treatment_type": "Neurology",
         "accreditation": "NABH",
         "cost_estimate": 1000,
-        "accepts_insurance": "No"
+        "accepts_insurance": false
       }
     }
   ]

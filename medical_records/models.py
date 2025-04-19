@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 # from django_cryptography.fields import EncryptedTextField  # For encrypting data
+from django.conf import settings
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -17,7 +18,7 @@ class MedicalRecord(models.Model):
         ('doctor_note', 'Doctor\'s Note'),
         ('surgery_summary', 'Surgery Summary'),
     ]
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     record_type = models.CharField(choices=RECORD_TYPES, max_length=100)
     
@@ -32,7 +33,7 @@ class MedicalRecord(models.Model):
         return self.title
 
 class Reminder(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     medical_record = models.ForeignKey(MedicalRecord, on_delete=models.CASCADE)
     reminder_date = models.DateTimeField()
 
