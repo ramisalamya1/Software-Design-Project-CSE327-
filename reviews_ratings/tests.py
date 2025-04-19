@@ -1,186 +1,186 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
-from .models import Review, Hospital, Doctor, ReviewFlag
-from .forms import ReviewForm, ReviewFlagForm
+from .models import PatientReview, Hospital, Doctor, ReviewReport
+from .forms import PatientReviewForm, ReviewReportForm
 from datetime import timedelta
 
 
-class ReviewModelTest(TestCase):
-    """Test cases for the Review model functionality."""
+class PatientReviewModelTest(TestCase):
+    """Test cases for the PatientReview model functionality."""
     
     def setUp(self):
-        """Set up test data for Review model tests."""
-        self.hospital = Hospital.objects.create(name="Test Hospital")
-        self.doctor = Doctor.objects.create(name="Dr. Test")
+        """Set up test data for PatientReview model tests."""
+        self.test_hospital = Hospital.objects.create(name="Test Hospital")
+        self.test_doctor = Doctor.objects.create(name="Dr. Test")
 
-        self.review = Review.objects.create(
-            hospital=self.hospital,
-            doctor=self.doctor,
-            service_quality=4,
-            cost_transparency=4,
-            facility_standards=4,
-            treatment_effectiveness=4,
-            text="Great service",
-            anonymous=True,
+        self.test_review = PatientReview.objects.create(
+            hospital=self.test_hospital,
+            doctor=self.test_doctor,
+            service_quality_rating=4,
+            cost_transparency_rating=4,
+            facility_standards_rating=4,
+            treatment_effectiveness_rating=4,
+            review_text="Great service",
+            is_anonymous=True,
             patient_id="P123"
         )
 
-    def test_str_method(self):
-        """Test the string representation of a Review."""
-        self.assertEqual(str(self.review), "Review by P123")
+    def test_string_representation(self):
+        """Test the string representation of a PatientReview."""
+        self.assertEqual(str(self.test_review), "Patient review by P123")
 
-    def test_average_rating(self):
+    def test_rating_calculation(self):
         """Test the average rating calculation."""
-        self.assertEqual(self.review.average_rating(), 4.0)
+        self.assertEqual(self.test_review.calculate_average_rating(), 4.0)
 
-    def test_is_editable_true(self):
+    def test_review_editable_when_new(self):
         """Test review editability when newly created."""
-        self.assertTrue(self.review.is_editable)
+        self.assertTrue(self.test_review.is_editable)
 
-    def test_is_editable_false(self):
+    def test_review_not_editable_after_timeout(self):
         """Test review editability after time limit."""
-        self.review.created_at = timezone.now() - timedelta(minutes=61)
-        self.review.save()
-        self.assertFalse(self.review.is_editable)
+        self.test_review.review_date = timezone.now() - timedelta(minutes=61)
+        self.test_review.save()
+        self.assertFalse(self.test_review.is_editable)
 
 
-class ReviewFlagModelTest(TestCase):
-    """Test cases for the ReviewFlag model functionality."""
+class ReviewReportModelTest(TestCase):
+    """Test cases for the ReviewReport model functionality."""
 
     def setUp(self):
-        """Set up test data for ReviewFlag model tests."""
-        self.review = Review.objects.create(
-            service_quality=3,
-            cost_transparency=3,
-            facility_standards=3,
-            treatment_effectiveness=3,
-            text="Needs improvement",
-            anonymous=False,
+        """Set up test data for ReviewReport model tests."""
+        self.test_review = PatientReview.objects.create(
+            service_quality_rating=3,
+            cost_transparency_rating=3,
+            facility_standards_rating=3,
+            treatment_effectiveness_rating=3,
+            review_text="Needs improvement",
+            is_anonymous=False,
         )
-        self.flag = ReviewFlag.objects.create(
-            review=self.review,
-            reason="Inappropriate content"
+        self.test_report = ReviewReport.objects.create(
+            reviewed_content=self.test_review,
+            report_reason="Inappropriate content"
         )
 
-    def test_flag_str_method(self):
-        """Test the string representation of a ReviewFlag."""
-        self.assertEqual(str(self.flag), f"Flag on {self.review.id} by Anonymous")
+    def test_string_representation(self):
+        """Test the string representation of a ReviewReport."""
+        self.assertEqual(str(self.test_report), f"Report for review {self.test_review.id}")
 
 
-class ReviewFormTest(TestCase):
-    """Test cases for the ReviewForm functionality."""
+class PatientReviewFormTest(TestCase):
+    """Test cases for the PatientReviewForm functionality."""
 
-    def test_valid_review_form(self):
+    def test_form_with_valid_data(self):
         """Test form validation with valid data."""
-        hospital = Hospital.objects.create(name="Form Hospital")
-        doctor = Doctor.objects.create(name="Form Doctor")
-        data = {
-            'hospital': hospital.id,
-            'doctor': doctor.id,
-            'anonymous': True,
-            'service_quality': 4,
-            'cost_transparency': 4,
-            'facility_standards': 4,
-            'treatment_effectiveness': 4,
-            'text': "Nice experience",
+        test_hospital = Hospital.objects.create(name="Form Hospital")
+        test_doctor = Doctor.objects.create(name="Form Doctor")
+        form_data = {
+            'hospital': test_hospital.id,
+            'doctor': test_doctor.id,
+            'is_anonymous': True,
+            'service_quality_rating': 4,
+            'cost_transparency_rating': 4,
+            'facility_standards_rating': 4,
+            'treatment_effectiveness_rating': 4,
+            'review_text': "Nice experience",
             'patient_id': "P456"
         }
-        form = ReviewForm(data=data)
+        form = PatientReviewForm(data=form_data)
         self.assertTrue(form.is_valid())
 
 
-class ReviewFlagFormTest(TestCase):
-    """Test cases for the ReviewFlagForm functionality."""
+class ReviewReportFormTest(TestCase):
+    """Test cases for the ReviewReportForm functionality."""
 
-    def test_valid_flag_form(self):
-        """Test flag form validation with valid data."""
-        data = {'reason': "Offensive language"}
-        form = ReviewFlagForm(data=data)
+    def test_form_with_valid_data(self):
+        """Test report form validation with valid data."""
+        form_data = {'report_reason': "Offensive language"}
+        form = ReviewReportForm(data=form_data)
         self.assertTrue(form.is_valid())
 
 
-class ReviewViewsTest(TestCase):
+class PatientReviewViewsTest(TestCase):
     """Test cases for review-related views."""
 
     def setUp(self):
         """Set up test data for view tests."""
-        self.client = Client()
-        self.hospital = Hospital.objects.create(name="Test Hospital")
-        self.doctor = Doctor.objects.create(name="Test Doctor")
-        self.review = Review.objects.create(
-            hospital=self.hospital,
-            doctor=self.doctor,
-            service_quality=5,
-            cost_transparency=5,
-            facility_standards=5,
-            treatment_effectiveness=5,
-            text="Excellent",
-            anonymous=False,
+        self.test_client = Client()
+        self.test_hospital = Hospital.objects.create(name="Test Hospital")
+        self.test_doctor = Doctor.objects.create(name="Test Doctor")
+        self.test_review = PatientReview.objects.create(
+            hospital=self.test_hospital,
+            doctor=self.test_doctor,
+            service_quality_rating=5,
+            cost_transparency_rating=5,
+            facility_standards_rating=5,
+            treatment_effectiveness_rating=5,
+            review_text="Excellent",
+            is_anonymous=False,
             patient_id="TestUser"
         )
 
-    def test_view_reviews(self):
+    def test_list_reviews(self):
         """Test the review listing view."""
-        response = self.client.get(reverse('view_reviews'))
+        response = self.test_client.get(reverse('view_reviews'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'review_list.html')
 
-    def test_add_review_get(self):
-        """Test GET request to add review page."""
-        response = self.client.get(reverse('add_review'))
+    def test_create_review_get(self):
+        """Test GET request to create review page."""
+        response = self.test_client.get(reverse('add_review'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'review_form.html')
 
-    def test_add_review_post(self):
+    def test_create_review_post(self):
         """Test POST request to create a new review."""
-        response = self.client.post(reverse('add_review'), {
-            'hospital': self.hospital.id,
-            'doctor': self.doctor.id,
-            'anonymous': False,
-            'service_quality': 4,
-            'cost_transparency': 4,
-            'facility_standards': 4,
-            'treatment_effectiveness': 4,
-            'text': "Good service",
+        response = self.test_client.post(reverse('add_review'), {
+            'hospital': self.test_hospital.id,
+            'doctor': self.test_doctor.id,
+            'is_anonymous': False,
+            'service_quality_rating': 4,
+            'cost_transparency_rating': 4,
+            'facility_standards_rating': 4,
+            'treatment_effectiveness_rating': 4,
+            'review_text': "Good service",
             'patient_id': "P789"
         })
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(Review.objects.count(), 2)
+        self.assertEqual(PatientReview.objects.count(), 2)
 
-    def test_edit_review(self):
+    def test_update_review(self):
         """Test editing an existing review."""
-        response = self.client.post(reverse('edit_review', args=[self.review.pk]), {
-            'hospital': self.hospital.id,
-            'doctor': self.doctor.id,
-            'anonymous': False,
-            'service_quality': 3,
-            'cost_transparency': 3,
-            'facility_standards': 3,
-            'treatment_effectiveness': 3,
-            'text': "Updated review",
+        response = self.test_client.post(reverse('edit_review', args=[self.test_review.pk]), {
+            'hospital': self.test_hospital.id,
+            'doctor': self.test_doctor.id,
+            'is_anonymous': False,
+            'service_quality_rating': 3,
+            'cost_transparency_rating': 3,
+            'facility_standards_rating': 3,
+            'treatment_effectiveness_rating': 3,
+            'review_text': "Updated review",
             'patient_id': "TestUser"
         })
         self.assertEqual(response.status_code, 302)
-        self.review.refresh_from_db()
-        self.assertEqual(self.review.text, "Updated review")
+        self.test_review.refresh_from_db()
+        self.assertEqual(self.test_review.review_text, "Updated review")
 
-    def test_delete_review(self):
+    def test_remove_review(self):
         """Test deleting a review."""
-        response = self.client.get(reverse('delete_review', args=[self.review.pk]))
+        response = self.test_client.get(reverse('delete_review', args=[self.test_review.pk]))
         self.assertEqual(response.status_code, 302)
-        self.assertFalse(Review.objects.filter(pk=self.review.pk).exists())
+        self.assertFalse(PatientReview.objects.filter(pk=self.test_review.pk).exists())
 
-    def test_flag_review_get(self):
-        """Test GET request to flag review page."""
-        response = self.client.get(reverse('flag_review', args=[self.review.pk]))
+    def test_report_review_get(self):
+        """Test GET request to report review page."""
+        response = self.test_client.get(reverse('flag_review', args=[self.test_review.pk]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'flag_review.html')
 
-    def test_flag_review_post(self):
-        """Test POST request to flag a review."""
-        response = self.client.post(reverse('flag_review', args=[self.review.pk]), {
-            'reason': "Spam content"
+    def test_report_review_post(self):
+        """Test POST request to report a review."""
+        response = self.test_client.post(reverse('flag_review', args=[self.test_review.pk]), {
+            'report_reason': "Spam content"
         })
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(ReviewFlag.objects.count(), 1)
+        self.assertEqual(ReviewReport.objects.count(), 1)
