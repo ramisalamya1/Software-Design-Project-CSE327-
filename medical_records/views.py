@@ -1,23 +1,57 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from admin_management.forms import CustomUserCreationForm
-from django.contrib import messages
-from django.contrib.auth import login, authenticate
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.core.files.storage import FileSystemStorage
-from .models import MedicalRecord, Category, Reminder
-from django.utils import timezone
+"""
+Views for the medical records application.
+Handles record management, sharing, and user authentication.
+"""
+# Standard library imports
+import os
 import uuid
-from fpdf import FPDF  # For generating PDFs
+
+# Django imports
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.http import Http404, HttpResponse, FileResponse
+from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import logout
-from django.shortcuts import redirect
 from admin_management.models import CustomUser
+from django.utils import timezone
+
+# Local imports
+from medical_records.models import MedicalRecord, Category, Reminder
+
+# Constants
+HOME_TEMPLATE = 'home.html'
+LOGIN_TEMPLATE = 'registration/login.html'
+REGISTER_TEMPLATE = 'registration/register.html'
+UPLOAD_TEMPLATE = 'upload_record.html'
+VIEW_RECORDS_TEMPLATE = 'view_records.html'
+SHARE_RECORD_TEMPLATE = 'share_record.html'
+VIEW_SHARED_TEMPLATE = 'view_shared_record.html'
+
+# Message constants
+MSG_CATEGORY_NOT_FOUND = "Category not found."
+MSG_INVALID_CATEGORY = "Please select a valid category."
+MSG_UPLOAD_SUCCESS = "Medical record uploaded successfully."
+MSG_ACCOUNT_CREATED = "Your account has been created!"
+MSG_FILE_NOT_FOUND = "File not found"
+
+# URL constants
+SHARED_RECORD_URL_PREFIX = "/medical/shared/"
+
+
+def home(request):
+    """Display the home page with user's medical records if authenticated."""
+    if request.user.is_authenticated:
+        records = MedicalRecord.objects.filter(user=request.user)
+    else:
+        records = None
+    return render(request, HOME_TEMPLATE, {'records': records})
 
 
 def login_view(request):
+    """Handle user login with redirect support."""
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
@@ -34,26 +68,30 @@ def login_view(request):
                 return redirect(next_page)
     else:
         form = AuthenticationForm()
+    return render(request, LOGIN_TEMPLATE, {'form': form})
 
-    # If the form is invalid, display an error message
-    return render(request, 'registration/login.html', {'form': form})
 
 def register(request):
+    """Handle user registration using Django's built-in UserCreationForm."""
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Your account has been created!')
+            messages.success(request, MSG_ACCOUNT_CREATED)
             return redirect('login')
     else:
-        form = CustomUserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
+        form = UserCreationForm()
+    return render(request, REGISTER_TEMPLATE, {'form': form})
+
 
 def logout_view(request):
+    """Log out the current user and redirect to login page."""
     logout(request)
-    return redirect('login')  # Redirect to login page after logout
+    return redirect('login')
+
 
 def upload_record(request):
+    """Handle medical record upload with file attachment and category assignment."""
     if request.method == 'POST':
         title = request.POST['title']
         record_type = request.POST['record_type']
@@ -61,15 +99,13 @@ def upload_record(request):
         description = request.POST['description']
         record_file = request.FILES['record_file']
 
-        # Fetch the category, handle if it doesn't exist
         try:
             category_instance = Category.objects.get(id=category)
         except Category.DoesNotExist:
             category_instance = None
-            messages.error(request, "Category not found.")
+            messages.error(request, MSG_CATEGORY_NOT_FOUND)
 
         if category_instance:
-            # Create new record
             medical_record = MedicalRecord(
                 user=request.user,
                 title=title,
@@ -79,46 +115,72 @@ def upload_record(request):
                 record_file=record_file
             )
             medical_record.save()
-
-            messages.success(request, "Medical record uploaded successfully.")
+            messages.success(request, MSG_UPLOAD_SUCCESS)
             return redirect('medical_records:view_records')
         else:
-            messages.error(request, "Please select a valid category.")
+            messages.error(request, MSG_INVALID_CATEGORY)
             
     categories = Category.objects.all()
-    return render(request, 'upload_record.html', {'categories': categories})
+    return render(request, UPLOAD_TEMPLATE, {'categories': categories})
+
+
 @login_required
 def view_records(request):
+    """Display all medical records for the authenticated user, ordered by creation date."""
     if not request.user.is_authenticated:
         return redirect('login')
     
     records = MedicalRecord.objects.filter(user=request.user).order_by('-date_created')
-    return render(request, 'view_records.html', {'records': records})
+    return render(request, VIEW_RECORDS_TEMPLATE, {'records': records})
+
 
 @login_required
 def share_record(request, record_id):
-    record = get_object_or_404(MedicalRecord, id=record_id)
+    """Generate or retrieve a sharing token for a medical record."""
+    record = get_object_or_404(MedicalRecord, id=record_id, user=request.user)
 
-    # Generate a temporary link (UUID)
-    share_link = uuid.uuid4().hex
-    # Store this link in a model, if required, to track sharing
-    # For simplicity, let's directly use it for this example
+    if not record.share_token:
+        record.share_token = uuid.uuid4().hex
+        record.save()
 
-    return render(request, 'share_record.html', {'record': record, 'share_link': share_link})
+    share_link = request.build_absolute_uri(f"{SHARED_RECORD_URL_PREFIX}{record.share_token}/")
+    return render(request, SHARE_RECORD_TEMPLATE, {'record': record, 'share_link': share_link})
+
+
+def view_shared_record(request, token):
+    """Display a shared medical record using its sharing token."""
+    try:
+        record = MedicalRecord.objects.get(share_token=token)
+    except MedicalRecord.DoesNotExist:
+        raise Http404("Record not found or invalid token")
+
+    return render(request, VIEW_SHARED_TEMPLATE, {'record': record})
+
 
 @login_required
 def download_pdf(request, record_id):
+    """Download a medical record file."""
     record = get_object_or_404(MedicalRecord, id=record_id)
+    file_path = record.record_file.path
+    file_name = os.path.basename(file_path)
+    return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
 
-    # Generate PDF of the medical record
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
-    pdf.cell(200, 10, txt=f"Medical Record: {record.title}", ln=True, align='C')
-    pdf.multi_cell(0, 10, txt=record.description)
-    pdf_output = pdf.output(dest='S').encode('latin1')
 
-    response = HttpResponse(pdf_output, content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{record.title}.pdf"'
-    return response
+def medical_home(request):
+    """Display medical records dashboard for authenticated user."""
+    records = MedicalRecord.objects.filter(user=request.user)
+    return render(request, HOME_TEMPLATE, {'records': records})
 
+
+@login_required
+def download_record(request, record_id):
+    """Download a medical record file with proper content disposition."""
+    record = get_object_or_404(MedicalRecord, id=record_id)
+    file_path = os.path.join(settings.MEDIA_ROOT, record.record_file.name)
+
+    if os.path.exists(file_path):
+        response = FileResponse(open(file_path, 'rb'), content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="{record.title}.pdf"'
+        return response
+    else:
+        return HttpResponse(MSG_FILE_NOT_FOUND, status=404)

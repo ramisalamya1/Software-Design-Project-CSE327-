@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shared Medical Record</title>
+</head>
+<body>
+    <h1>Shared Medical Record</h1>
+    <p><strong>Title:</strong> {{ record.title }}</p>
+    <p><strong>Description:</strong> {{ record.description }}</p>
+    <p><strong>Type:</strong> {{ record.record_type }}</p>
+    <p><strong>Category:</strong> {{ record.category.name }}</p>
+    <p><strong>Uploaded by:</strong> {{ record.user.username }}</p>
+    <p><a href="{{ record.record_file.url }}">Download File</a></p>
+</body>
+</html>

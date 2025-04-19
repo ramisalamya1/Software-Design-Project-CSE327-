@@ -1,20 +1,82 @@
+"""
+URL configuration for medical records application.
+Defines routing patterns for views and sets application namespace.
+"""
+# Django imports
 from django.urls import path
 from django.shortcuts import render
-from . import views
 
-app_name = 'medical_records'
+# Local imports
+from medical_records import views
 
 def home(request):
     # Render a global template from the main project directory
     return render(request, 'home.html')  # Assuming home.html is your global template
+# Constants for URL patterns
+APP_NAMESPACE = 'medical_records'
+HOME_TEMPLATE = 'home.html'
 
+
+def medical_home(request):  # snake_case for function name
+    """Render the medical records home page."""
+    return render(request, HOME_TEMPLATE)
+
+
+# Application namespace
+app_name = APP_NAMESPACE  # snake_case for variable name
+
+# URL patterns grouped by functionality
 urlpatterns = [
-    path('register/', views.register, name='register'),
-    path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
-    path('', home, name='home'),  # This will handle 'medical/' route
-    path('upload/', views.upload_record, name='upload_record'),
-    path('view/', views.view_records, name='view_records'),
-    path('share/<int:record_id>/', views.share_record, name='share_record'),
-    path('download_pdf/<int:record_id>/', views.download_pdf, name='download_pdf'),
+    # Authentication URLs
+    path(
+        'register/',
+        views.register,
+        name='register'
+    ),
+    path(
+        'login/',
+        views.login_view,  # snake_case for view name
+        name='login'
+    ),
+    path(
+        'logout/',
+        views.logout_view,  # snake_case for view name
+        name='logout'
+    ),
+    
+    # Core application URLs
+    path(
+        '',
+        medical_home,  # snake_case for view name
+        name='medical_home'
+    ),
+    path(
+        'upload/',
+        views.upload_record,  # snake_case for view name
+        name='upload_record'
+    ),
+    path(
+        'view/',
+        views.view_records,  # snake_case for view name
+        name='view_records'
+    ),
+    
+    # Record sharing and access URLs
+    path(
+        'share/<int:record_id>/',
+        views.share_record,  # snake_case for view name
+        name='share_record'
+    ),
+    path(
+        'shared/<str:token>/',
+        views.view_shared_record,  # snake_case for view name
+        name='view_shared_record'
+    ),
+    
+    # Record download URL
+    path(
+        'download_record/<int:record_id>/',
+        views.download_record,  # snake_case for view name
+        name='download_record'
+    ),
 ]
