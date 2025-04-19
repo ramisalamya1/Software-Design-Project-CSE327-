@@ -1,5 +1,6 @@
-Model Documentation
-===================
+Models Documentation
+====================
 
-.. automodule:: global_medicare_connect.secure_payment.models
-   :members:
+.. automodule:: secure_payment.models
+    :members:
+    :undoc-members:

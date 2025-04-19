@@ -1,5 +1,6 @@
-Admin Documentation
-====================
+Admin Interface Documentation
+==============================
 
-.. automodule:: global_medicare_connect.secure_payment.admin
-   :members:
+.. automodule:: secure_payment.admin
+    :members:
+    :undoc-members:

@@ -1,5 +1,6 @@
-View Documentation
-==================
+Views Documentation
+===================
 
-.. automodule:: myproject.secure_payment.views
-   :members:
+.. automodule:: secure_payment.views
+    :members:
+    :undoc-members:
