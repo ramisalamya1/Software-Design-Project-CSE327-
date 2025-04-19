@@ -4,7 +4,14 @@ from .forms import ReviewForm, ReviewFlagForm
 from django.utils import timezone
 from django.db.models import Avg
 
+
 def add_review(request):
+    """
+    Handle creation of new reviews.
+    
+    GET: Display empty review form
+    POST: Process submitted review form and save if valid
+    """
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
@@ -17,7 +24,17 @@ def add_review(request):
     
     return render(request, 'review_form.html', {'form': form})
 
+
 def edit_review(request, pk):
+    """
+    Handle editing of existing reviews.
+    
+    Args:
+        pk: Primary key of the review to edit
+        
+    GET: Display pre-filled review form
+    POST: Process updated review form and save if valid
+    """
     review = get_object_or_404(Review, pk=pk)
     
     if request.method == 'POST':
@@ -30,12 +47,31 @@ def edit_review(request, pk):
 
     return render(request, 'review_form.html', {'form': form, 'edit': True})
 
+
 def delete_review(request, pk):
+    """
+    Delete a specific review.
+    
+    Args:
+        pk: Primary key of the review to delete
+    """
     review = get_object_or_404(Review, pk=pk)
     review.delete()
     return redirect('view_reviews')
 
+
 def view_reviews(request):
+    """
+    Display list of reviews with filtering options.
+    
+    Supports filtering by:
+    - Hospital
+    - Doctor
+    - Service quality
+    - Anonymous status
+    
+    Also calculates average service quality rating.
+    """
     reviews = Review.objects.all().prefetch_related('flags')
 
     hospitals = Hospital.objects.all()
@@ -73,7 +109,17 @@ def view_reviews(request):
         'doctors': doctors,
     })
 
+
 def flag_review(request, pk):
+    """
+    Handle flagging of inappropriate reviews.
+    
+    Args:
+        pk: Primary key of the review to flag
+        
+    GET: Display flag review form
+    POST: Process submitted flag form and save if valid
+    """
     review = get_object_or_404(Review, pk=pk)
 
     if request.method == 'POST':
