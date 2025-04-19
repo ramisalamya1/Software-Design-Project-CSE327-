@@ -2,19 +2,23 @@
 Views for the medical records application.
 Handles record management, sharing, and user authentication.
 """
+# Standard library imports
+import os
+import uuid
+
+# Django imports
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import Http404, HttpResponse, FileResponse
 from django.core.files.storage import FileSystemStorage
-from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.utils import timezone
-from .models import MedicalRecord, Category, Reminder
-import uuid
-import os
 
+# Local imports
+from medical_records.models import MedicalRecord, Category, Reminder
 
 # Constants
 HOME_TEMPLATE = 'home.html'

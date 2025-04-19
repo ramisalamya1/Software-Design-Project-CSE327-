@@ -2,10 +2,12 @@
 URL configuration for medical records application.
 Defines routing patterns for views and sets application namespace.
 """
+# Django imports
 from django.urls import path
 from django.shortcuts import render
-from . import views
 
+# Local imports
+from medical_records import views
 
 # Constants for URL patterns
 APP_NAMESPACE = 'medical_records'

@@ -2,8 +2,11 @@
 Admin configuration for medical records application.
 Registers models for Django admin interface management.
 """
+# Django imports
 from django.contrib import admin
-from .models import MedicalRecord, Category, Reminder  # PascalCase for class names (correct)
+
+# Local imports
+from medical_records.models import MedicalRecord, Category, Reminder
 
 
 # Constants for admin customization if needed
