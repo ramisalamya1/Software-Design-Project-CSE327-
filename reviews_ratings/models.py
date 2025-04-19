@@ -4,9 +4,11 @@ Models for handling hospital and doctor reviews and ratings.
 This module defines the data models for storing and managing patient reviews,
 including ratings across multiple criteria and review flagging functionality.
 """
-
+# Django imports
 from django.db import models
 from django.contrib.auth.models import User
+
+# Local imports
 from hospital_search.models import Hospital, Doctor
 
 class Review(models.Model):

@@ -1,10 +1,11 @@
+# Django imports
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Review, Hospital, Doctor, ReviewFlag
-from .forms import ReviewForm, ReviewFlagForm
 from django.utils import timezone
 from django.db.models import Avg
 
-
+# Local imports
+from reviews_ratings.models import Review, Hospital, Doctor, ReviewFlag
+from reviews_ratings.forms import ReviewForm, ReviewFlagForm
 def add_review(request):
     """
     Handle creation of new reviews.

@@ -1,7 +1,8 @@
-# reviews/urls.py
-
+# Django imports
 from django.urls import path
-from . import views
+
+# Local imports
+from reviews_ratings import views
 
 urlpatterns = [
     path('add/', views.add_review, name='add_review'),

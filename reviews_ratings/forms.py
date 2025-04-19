@@ -1,8 +1,9 @@
+# Django imports
 from django import forms
 from django.core.validators import MinLengthValidator
-from .models import Review, ReviewFlag, Hospital, Doctor
 
-
+# Local imports
+from reviews_ratings.models import Review, ReviewFlag, Hospital, Doctor
 class ReviewForm(forms.ModelForm):
     """
     Form for creating and editing hospital/doctor reviews.

@@ -2,10 +2,11 @@
 Admin configuration for the reviews and ratings application.
 Registers Review and ReviewFlag models for admin interface management.
 """
-
+# Django imports
 from django.contrib import admin
-from .models import Review, ReviewFlag
 
+# Local imports
+from reviews_ratings.models import Review, ReviewFlag
 
 class ReviewAdmin(admin.ModelAdmin):
     """Admin configuration for Review model."""
