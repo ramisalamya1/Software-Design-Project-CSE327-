@@ -8,7 +8,6 @@ from django.core.files.storage import FileSystemStorage
 from .models import MedicalRecord, Category, Reminder
 from django.utils import timezone
 import uuid
-from fpdf import FPDF  # For generating PDFs
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm
