@@ -38,12 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'widget_tweaks',
     'booking',
     'hospital_search',
     'hospital_comparison',
     'admin_management',
     'medical_records.apps.MedicalRecordsConfig',  # Add this line
     'package_customization'
+    'reviews_ratings',
 ]
 
 

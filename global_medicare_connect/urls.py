@@ -24,6 +24,7 @@ from django.urls import path, include
 from django.conf.urls.static import static 
 
 
+
 urlpatterns = [
     path('search/', include('hospital_search.urls')),
     path('booking/', include('booking.urls')),
@@ -35,6 +36,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('register/', views.register, name='register'), 
     path('hospital_comparison/', include('hospital_comparison.urls')), 
+    path('reviews/', include('reviews_ratings.urls')),
 ]
 
 if settings.DEBUG:
