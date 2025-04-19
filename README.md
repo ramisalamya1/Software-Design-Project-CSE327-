@@ -8,20 +8,20 @@ A Django-based appointment booking platform with package customization that allo
 
 ## Features
 
-- Hospital search
-- Hospital comparison
-- Appointment booking
-- Admin management
-- Package customization
-- Secure payment
-- Medical records management
-- Reviews and ratings
+- Hospital Search
+- Hospital Comparison
+- Appointment Booking
+- Admin Management
+- Package Customization
+- Secure Payment
+- Medical Records Management
+- Reviews & Ratings
 
 ---
 
 ## Tools
 
-- **Backend**: Django
+- **Backend**: Django 4.x, Python 3.x
 - **Frontend**: HTML, CSS, Bootstrap
 - **Database**: SQLite
 - **Docs**: Sphinx
